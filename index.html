@@ -1148,8 +1148,14 @@ h1, h2, h3, .display { font-family: 'Cormorant', serif; }
     <div class="gap-xl"></div>
     <div style="text-align:center">
       <p class="body" style="margin-bottom:1rem">Modules 4–10 coming soon: Positioning, Brand Promise, Story, Voice, Visual Identity, Content Architecture, Brand System.</p>
-      <button class="btn btn-secondary" onclick="exportResults()">Export Results</button>
-      <span id="save-badge" style="display:none; margin-left:1rem; color:var(--success); font-family:'Azeret Mono',monospace; font-size:0.8rem;">✓ saved</span>
+      <div id="email-capture" style="margin-top:2rem; max-width:400px; margin-left:auto; margin-right:auto;">
+        <p class="body" style="margin-bottom:0.75rem; color:var(--text-secondary);">Get your full results delivered to your inbox.</p>
+        <div style="display:flex; gap:0.5rem;">
+          <input type="email" id="input-email" placeholder="your@email.com" style="flex:1; padding:0.75rem 1rem; background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius); color:var(--text-primary); font-family:'Manrope',sans-serif; font-size:0.95rem; outline:none; transition:border-color var(--transition);" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" />
+          <button class="btn btn-primary" onclick="submitEmail()" style="white-space:nowrap;">Email Me Results</button>
+        </div>
+        <span id="email-badge" style="display:none; margin-top:0.5rem; display:none; color:var(--success); font-family:'Azeret Mono',monospace; font-size:0.8rem;">✓ sent — check your inbox</span>
+      </div>
     </div>
   </div>
 
@@ -1576,12 +1582,13 @@ Object.keys(ARCHETYPES).forEach(k => state.m3.scores[k] = 0);
 const SUPABASE_URL = 'https://ftxvqzwsoiuxptbtnzmf.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_v3kbZDvdd57Nfv8XDVZ4uA_qhaf5VO_';
 let sb = null;
+let submissionId = null;
 try { sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null; } catch(e) { console.warn('Supabase init failed:', e); }
 
 async function submitToSupabase(primaryKey, secondaryKey, synthesisName) {
   if (!sb) { console.warn('Supabase not loaded'); return; }
   try {
-    const { error } = await sb.from('quiz_submissions').insert({
+    const { data, error } = await sb.from('quiz_submissions').insert({
       why: state.m1.why,
       values: state.m1.values,
       anti_values: state.m1.antiValues,
@@ -1600,11 +1607,51 @@ async function submitToSupabase(primaryKey, secondaryKey, synthesisName) {
       archetype_scores: state.m3.scores,
       tension_values: state.m3.tensions,
       quiz_answers: state.m3.answers
-    });
+    }).select('id').single();
     if (error) { console.error('Supabase insert error:', error); return; }
-    const badge = document.getElementById('save-badge');
-    if (badge) badge.style.display = 'inline';
+    if (data) submissionId = data.id;
   } catch (e) { console.error('Supabase submit failed:', e); }
+}
+
+async function submitEmail() {
+  const emailInput = document.getElementById('input-email');
+  const email = emailInput.value.trim();
+  if (!email || !email.includes('@')) { emailInput.style.borderColor = 'var(--error)'; return; }
+  if (!sb || !submissionId) {
+    // Fallback: insert a new row with email if we lost the original ID
+    if (sb) {
+      const [a1key, a2key] = state.m3.topTwo;
+      await sb.from('quiz_submissions').insert({
+        email: email,
+        why: state.m1.why,
+        values: state.m1.values,
+        anti_values: state.m1.antiValues,
+        story_moment: state.m1.storyMoment,
+        story_unique: state.m1.storyUnique,
+        story_fix: state.m1.storyFix,
+        customer: state.m2.customer,
+        problem_surface: state.m2.problemSurface,
+        problem_deep: state.m2.problemDeep,
+        transform_before: state.m2.transformBefore,
+        transform_after: state.m2.transformAfter,
+        bridge: state.m2.bridge,
+        primary_archetype: a1key,
+        secondary_archetype: a2key,
+        synthesis_name: document.querySelector('.synthesis-name')?.textContent || '',
+        archetype_scores: state.m3.scores,
+        tension_values: state.m3.tensions,
+        quiz_answers: state.m3.answers
+      });
+    }
+  } else {
+    await sb.from('quiz_submissions').update({ email: email }).eq('id', submissionId);
+  }
+  const badge = document.getElementById('email-badge');
+  if (badge) { badge.style.display = 'block'; }
+  emailInput.disabled = true;
+  emailInput.style.opacity = '0.5';
+  document.querySelector('#email-capture .btn').disabled = true;
+  document.querySelector('#email-capture .btn').textContent = 'Sent ✓';
 }
 
 // ═══════════════════════════════════════════════
