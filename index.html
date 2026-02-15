@@ -1575,12 +1575,13 @@ Object.keys(ARCHETYPES).forEach(k => state.m3.scores[k] = 0);
 
 const SUPABASE_URL = 'https://ftxvqzwsoiuxptbtnzmf.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_v3kbZDvdd57Nfv8XDVZ4uA_qhaf5VO_';
-const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+let sb = null;
+try { sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null; } catch(e) { console.warn('Supabase init failed:', e); }
 
 async function submitToSupabase(primaryKey, secondaryKey, synthesisName) {
-  if (!supabase) { console.warn('Supabase not loaded'); return; }
+  if (!sb) { console.warn('Supabase not loaded'); return; }
   try {
-    const { error } = await supabase.from('quiz_submissions').insert({
+    const { error } = await sb.from('quiz_submissions').insert({
       why: state.m1.why,
       values: state.m1.values,
       anti_values: state.m1.antiValues,
