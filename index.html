@@ -1585,10 +1585,19 @@ let sb = null;
 let submissionId = null;
 try { sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null; } catch(e) { console.warn('Supabase init failed:', e); }
 
+function genUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+
 async function submitToSupabase(primaryKey, secondaryKey, synthesisName) {
   if (!sb) { console.warn('Supabase not loaded'); return; }
+  submissionId = genUUID();
   try {
-    const { data, error } = await sb.from('quiz_submissions').insert({
+    const { error } = await sb.from('quiz_submissions').insert({
+      id: submissionId,
       why: state.m1.why,
       values: state.m1.values,
       anti_values: state.m1.antiValues,
@@ -1607,9 +1616,8 @@ async function submitToSupabase(primaryKey, secondaryKey, synthesisName) {
       archetype_scores: state.m3.scores,
       tension_values: state.m3.tensions,
       quiz_answers: state.m3.answers
-    }).select('id').single();
-    if (error) { console.error('Supabase insert error:', error); return; }
-    if (data) submissionId = data.id;
+    });
+    if (error) { console.error('Supabase insert error:', error); }
   } catch (e) { console.error('Supabase submit failed:', e); }
 }
 
