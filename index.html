@@ -1,0 +1,2407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Archetype — Personal Brand Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Manrope:wght@300;400;500;600;700&family=Azeret+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   VARIABLES & RESET
+   ═══════════════════════════════════════════════ */
+:root {
+  --bg-deep: #08070a;
+  --bg-primary: #0e0c12;
+  --bg-surface: #16131b;
+  --bg-elevated: #1e1a24;
+  --bg-hover: #262230;
+  --text-primary: #ede6d8;
+  --text-secondary: #9b9490;
+  --text-dim: #5e5a56;
+  --accent: #c9a162;
+  --accent-bright: #e0ba76;
+  --accent-dim: #8b7a52;
+  --accent-glow: rgba(201, 161, 98, 0.12);
+  --accent-glow-strong: rgba(201, 161, 98, 0.25);
+  --border: #2a2530;
+  --border-light: #3a3540;
+  --success: #6baa75;
+  --error: #c97272;
+  --radius: 8px;
+  --radius-lg: 16px;
+  --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: 'Manrope', sans-serif;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Background texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(201,161,98,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(140,100,180,0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Noise overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ═══════════════════════════════════════════════
+   TYPOGRAPHY
+   ═══════════════════════════════════════════════ */
+h1, h2, h3, .display { font-family: 'Cormorant', serif; }
+
+.display-xl {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.display-lg {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.display-md {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.label {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.body-lg {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  font-weight: 300;
+}
+
+.body { font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary); }
+
+/* ═══════════════════════════════════════════════
+   LAYOUT
+   ═══════════════════════════════════════════════ */
+.app {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+.screen {
+  display: none;
+  min-height: 100vh;
+  padding: 2rem 1.5rem;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.screen.active {
+  display: flex;
+  flex-direction: column;
+  animation: screenIn 0.5s ease forwards;
+}
+
+@keyframes screenIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.screen-center {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.spacer { flex: 1; }
+.gap-xs { height: 0.5rem; }
+.gap-sm { height: 1rem; }
+.gap-md { height: 1.5rem; }
+.gap-lg { height: 2.5rem; }
+.gap-xl { height: 4rem; }
+
+/* ═══════════════════════════════════════════════
+   PROGRESS BAR
+   ═══════════════════════════════════════════════ */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--bg-surface);
+  z-index: 100;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 12px var(--accent-glow-strong);
+}
+
+.progress-nav {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 100;
+  padding: 6px 16px;
+  background: rgba(14, 12, 18, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+}
+
+.progress-nav.visible { display: flex; }
+
+.progress-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border-light);
+  transition: all var(--transition);
+}
+
+.progress-dot.active { background: var(--accent); box-shadow: 0 0 8px var(--accent-glow-strong); }
+.progress-dot.done { background: var(--success); }
+
+.progress-label {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  margin-left: 0.5rem;
+}
+
+/* ═══════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════ */
+.btn {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 14px 36px;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg-deep);
+}
+
+.btn-primary:hover {
+  background: var(--accent-bright);
+  box-shadow: 0 4px 24px var(--accent-glow-strong);
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  background: var(--border);
+  color: var(--text-dim);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  border-color: var(--accent-dim);
+  color: var(--text-primary);
+}
+
+.btn-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.btn-back {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: color var(--transition);
+}
+
+.btn-back:hover { color: var(--text-secondary); }
+
+/* ═══════════════════════════════════════════════
+   FORM ELEMENTS
+   ═══════════════════════════════════════════════ */
+.text-input, .textarea-input {
+  width: 100%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-family: 'Cormorant', serif;
+  font-size: 1.3rem;
+  padding: 16px 20px;
+  transition: all var(--transition);
+  line-height: 1.5;
+}
+
+.text-input:focus, .textarea-input:focus {
+  outline: none;
+  border-color: var(--accent-dim);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.text-input::placeholder, .textarea-input::placeholder {
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.textarea-input {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.input-group { margin-bottom: 1.5rem; }
+
+.input-label {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.input-hint {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-top: 0.4rem;
+  font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════
+   CHIP SELECTOR (Values, Anti-Values)
+   ═══════════════════════════════════════════════ */
+.chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  padding: 10px 18px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all var(--transition);
+  user-select: none;
+}
+
+.chip:hover {
+  border-color: var(--accent-dim);
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+}
+
+.chip.selected {
+  background: var(--accent-glow-strong);
+  border-color: var(--accent);
+  color: var(--accent-bright);
+}
+
+.chip.selected:hover {
+  background: var(--accent-glow);
+}
+
+.chip-count {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-top: 1rem;
+}
+
+.chip-count .highlight { color: var(--accent); }
+
+/* ═══════════════════════════════════════════════
+   QUIZ (Module 3)
+   ═══════════════════════════════════════════════ */
+.quiz-counter {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+}
+
+.quiz-question {
+  font-family: 'Cormorant', serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--text-primary);
+  margin: 1.5rem 0;
+}
+
+.quiz-options { display: flex; flex-direction: column; gap: 12px; }
+
+.quiz-option {
+  padding: 18px 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: left;
+  position: relative;
+  padding-left: 48px;
+}
+
+.quiz-option::before {
+  content: attr(data-letter);
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+
+.quiz-option:hover {
+  border-color: var(--accent-dim);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.quiz-option.selected {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+  color: var(--text-primary);
+}
+
+.quiz-option.selected::before { color: var(--accent); }
+
+/* ═══════════════════════════════════════════════
+   TENSION SLIDERS (Module 3 Phase 2)
+   ═══════════════════════════════════════════════ */
+.tension-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  margin-bottom: 20px;
+}
+
+.tension-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.tension-pole {
+  font-family: 'Cormorant', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  max-width: 40%;
+}
+
+.tension-pole.left { color: var(--text-primary); text-align: left; }
+.tension-pole.right { color: var(--text-primary); text-align: right; }
+
+.tension-vs {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  letter-spacing: 0.2em;
+}
+
+.tension-desc {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.tension-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, var(--accent-dim), var(--border-light), var(--accent-dim));
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.tension-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg-deep);
+  box-shadow: 0 0 12px var(--accent-glow-strong);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.tension-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.tension-value {
+  text-align: center;
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-top: 10px;
+}
+
+/* ═══════════════════════════════════════════════
+   RESULTS
+   ═══════════════════════════════════════════════ */
+.result-hero {
+  text-align: center;
+  padding: 3rem 0;
+}
+
+.result-ratio {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.result-archetype {
+  text-align: center;
+}
+
+.result-archetype-name {
+  font-family: 'Cormorant', serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.result-archetype-pct {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: var(--accent);
+  margin-top: 0.25rem;
+}
+
+.result-divider {
+  width: 1px;
+  height: 80px;
+  background: var(--border);
+}
+
+.result-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  margin: 2rem 0;
+  overflow: hidden;
+  display: flex;
+}
+
+.result-bar-fill {
+  height: 100%;
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.result-bar-fill.primary { background: var(--accent); }
+.result-bar-fill.secondary { background: var(--accent-dim); }
+
+.property-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 2rem 0;
+}
+
+.property-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.property-card h4 {
+  font-family: 'Cormorant', serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.property-card p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.synthesis-block {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin: 2rem 0;
+}
+
+.synthesis-name {
+  font-family: 'Cormorant', serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 300;
+  color: var(--accent-bright);
+  letter-spacing: 0.05em;
+}
+
+.synthesis-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  margin-top: 0.5rem;
+}
+
+.decision-filter {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  margin: 2rem 0;
+}
+
+.decision-filter h3 {
+  font-family: 'Cormorant', serif;
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+.filter-question {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.5;
+}
+
+.filter-question:last-child { border-bottom: none; }
+
+/* Module summary cards */
+.summary-section {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.summary-section .label { margin-bottom: 0.75rem; display: block; }
+
+.summary-value {
+  font-family: 'Cormorant', serif;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.summary-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 0.5rem;
+}
+
+.summary-chip {
+  padding: 6px 14px;
+  border: 1px solid var(--accent-dim);
+  border-radius: 100px;
+  font-size: 0.8rem;
+  color: var(--accent);
+}
+
+/* ═══════════════════════════════════════════════
+   ARCHETYPE REVEAL
+   ═══════════════════════════════════════════════ */
+.reveal-container {
+  opacity: 0;
+  animation: revealFade 1s ease 0.3s forwards;
+}
+
+@keyframes revealFade {
+  to { opacity: 1; }
+}
+
+.reveal-stagger-1 { animation-delay: 0.5s; }
+.reveal-stagger-2 { animation-delay: 0.8s; }
+.reveal-stagger-3 { animation-delay: 1.1s; }
+.reveal-stagger-4 { animation-delay: 1.4s; }
+
+.archetype-detail {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  margin: 1rem 0;
+}
+
+.archetype-detail h3 {
+  font-family: 'Cormorant', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.archetype-detail .motto {
+  font-style: italic;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.archetype-detail .trait-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+
+.archetype-detail .trait-row:last-child { border-bottom: none; }
+.trait-label { color: var(--text-dim); }
+.trait-value { color: var(--text-primary); text-align: right; max-width: 60%; }
+
+/* ═══════════════════════════════════════════════
+   LANDING SPECIFICS
+   ═══════════════════════════════════════════════ */
+.landing-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+.module-list {
+  text-align: left;
+  max-width: 400px;
+  margin: 2rem auto;
+}
+
+.module-list-item {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.module-list-item:last-child { border-bottom: none; }
+
+.module-num {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--accent-dim);
+  min-width: 24px;
+}
+
+.module-name {
+  font-family: 'Cormorant', serif;
+  font-size: 1.15rem;
+  color: var(--text-primary);
+}
+
+.module-name.locked { color: var(--text-dim); }
+
+/* ═══════════════════════════════════════════════
+   MODULE HEADER
+   ═══════════════════════════════════════════════ */
+.module-header {
+  padding: 3rem 0 1rem;
+}
+
+.module-tag {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--accent-dim);
+  text-transform: uppercase;
+}
+
+.step-indicator {
+  font-family: 'Azeret Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-top: 0.5rem;
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .screen { padding: 1.5rem 1rem; }
+  .property-grid { grid-template-columns: 1fr; }
+  .result-ratio { gap: 1.25rem; }
+  .result-archetype-pct { font-size: 2rem; }
+  .tension-header { flex-direction: column; gap: 0.5rem; text-align: center; }
+  .tension-pole { max-width: 100%; text-align: center !important; }
+  .btn-row { flex-direction: column; }
+  .btn { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Progress bar -->
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 0%"></div></div>
+  <div class="progress-nav" id="progressNav">
+    <div class="progress-dot" data-module="1"></div>
+    <div class="progress-dot" data-module="2"></div>
+    <div class="progress-dot" data-module="3"></div>
+    <span class="progress-label" id="progressLabel"></span>
+  </div>
+
+  <!-- ═══════════════ LANDING ═══════════════ -->
+  <div class="screen screen-center active" id="screen-landing">
+    <div class="spacer"></div>
+    <div class="landing-badge">Personal Brand Builder</div>
+    <h1 class="display-xl">Find Your<br>Archetype</h1>
+    <div class="gap-md"></div>
+    <p class="body-lg" style="max-width: 480px">
+      A 3-module journey to discover the foundation of your personal brand.
+      Built on Jungian psychology and real brand methodology.
+    </p>
+    <div class="gap-lg"></div>
+    <div class="module-list">
+      <div class="module-list-item">
+        <span class="module-num">01</span>
+        <span class="module-name">Foundation</span>
+      </div>
+      <div class="module-list-item">
+        <span class="module-num">02</span>
+        <span class="module-name">Audience</span>
+      </div>
+      <div class="module-list-item">
+        <span class="module-num">03</span>
+        <span class="module-name">Archetype</span>
+      </div>
+      <div class="module-list-item">
+        <span class="module-num">04</span>
+        <span class="module-name locked">Positioning</span>
+      </div>
+      <div class="module-list-item">
+        <span class="module-num">05</span>
+        <span class="module-name locked">Brand Promise</span>
+      </div>
+      <div class="module-list-item">
+        <span class="module-num">06–10</span>
+        <span class="module-name locked">Story, Voice, Visual, Content, System</span>
+      </div>
+    </div>
+    <div class="gap-lg"></div>
+    <button class="btn btn-primary" onclick="goTo('screen-m1-why')">Begin Your Journey</button>
+    <div class="spacer"></div>
+  </div>
+
+  <!-- ═══════════════ MODULE 1: FOUNDATION ═══════════════ -->
+
+  <!-- M1 Step 1: WHY -->
+  <div class="screen" id="screen-m1-why">
+    <div class="module-header">
+      <div class="module-tag">Module 1 — Foundation</div>
+      <h2 class="display-lg">The WHY</h2>
+      <div class="step-indicator">Step 1 of 4</div>
+    </div>
+    <p class="body-lg">Before your brand can resonate with others, you need to articulate the belief that drives you. Not a mission statement — a conviction.</p>
+    <div class="gap-lg"></div>
+    <div class="input-group">
+      <label class="input-label">Complete this sentence:</label>
+      <div style="display:flex; align-items:baseline; gap:12px;">
+        <span class="display-md" style="color:var(--accent); white-space:nowrap">"I believe</span>
+        <textarea class="textarea-input" id="input-why" placeholder="that every person deserves..." rows="3" oninput="validateStep()"></textarea>
+      </div>
+      <span class="display-md" style="color:var(--accent); text-align:right; display:block; margin-top:4px">"</span>
+      <p class="input-hint">Think: What injustice do you want to fix? What truth do you hold that others don't see? What would you fight for even if nobody paid you?</p>
+    </div>
+    <div class="spacer"></div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('screen-landing')">Back</button>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="btn-m1-why" onclick="goTo('screen-m1-values')" disabled>Continue</button>
+    </div>
+  </div>
+
+  <!-- M1 Step 2: Values -->
+  <div class="screen" id="screen-m1-values">
+    <div class="module-header">
+      <div class="module-tag">Module 1 — Foundation</div>
+      <h2 class="display-lg">Core Values</h2>
+      <div class="step-indicator">Step 2 of 4</div>
+    </div>
+    <p class="body">Select exactly <strong>5 values</strong> that are non-negotiable for you. Not aspirational — the ones you actually live by.</p>
+    <div class="gap-md"></div>
+    <div class="chip-grid" id="values-grid"></div>
+    <div class="chip-count">Selected: <span class="highlight" id="values-count">0</span> of 5</div>
+    <div class="spacer"></div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('screen-m1-why')">Back</button>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="btn-m1-values" onclick="goTo('screen-m1-antivalues')" disabled>Continue</button>
+    </div>
+  </div>
+
+  <!-- M1 Step 3: Anti-Values -->
+  <div class="screen" id="screen-m1-antivalues">
+    <div class="module-header">
+      <div class="module-tag">Module 1 — Foundation</div>
+      <h2 class="display-lg">What You Refuse</h2>
+      <div class="step-indicator">Step 3 of 4</div>
+    </div>
+    <p class="body">Your brand is defined as much by what you reject as what you embrace. Select <strong>3 things</strong> you stand against.</p>
+    <div class="gap-md"></div>
+    <div class="chip-grid" id="antivalues-grid"></div>
+    <div class="chip-count">Selected: <span class="highlight" id="antivalues-count">0</span> of 3</div>
+    <div class="spacer"></div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('screen-m1-values')">Back</button>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="btn-m1-antivalues" onclick="goTo('screen-m1-story')" disabled>Continue</button>
+    </div>
+  </div>
+
+  <!-- M1 Step 4: Story Raw Material -->
+  <div class="screen" id="screen-m1-story">
+    <div class="module-header">
+      <div class="module-tag">Module 1 — Foundation</div>
+      <h2 class="display-lg">Your Raw Material</h2>
+      <div class="step-indicator">Step 4 of 4</div>
+    </div>
+    <p class="body">Answer these prompts honestly. Don't overthink — write what comes first.</p>
+    <div class="gap-md"></div>
+    <div class="input-group">
+      <label class="input-label">"The moment that changed everything for me was..."</label>
+      <textarea class="textarea-input" id="input-story-moment" placeholder="Write freely..." rows="3" oninput="validateStep()"></textarea>
+    </div>
+    <div class="input-group">
+      <label class="input-label">"What I know that most people in my space don't is..."</label>
+      <textarea class="textarea-input" id="input-story-unique" placeholder="Your unfair advantage..." rows="3" oninput="validateStep()"></textarea>
+    </div>
+    <div class="input-group">
+      <label class="input-label">"If I could fix one thing about my industry, it would be..."</label>
+      <textarea class="textarea-input" id="input-story-fix" placeholder="The injustice, the gap, the lie..." rows="3" oninput="validateStep()"></textarea>
+    </div>
+    <div class="spacer"></div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('screen-m1-antivalues')">Back</button>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="btn-m1-story" onclick="showM1Summary()" disabled>View Summary</button>
+    </div>
+  </div>
+
+  <!-- M1 Summary -->
+  <div class="screen" id="screen-m1-summary">
+    <div class="module-header">
+      <div class="module-tag">Module 1 — Complete</div>
+      <h2 class="display-lg">Your Foundation</h2>
+    </div>
+    <div id="m1-summary-content"></div>
+    <div class="gap-lg"></div>
+    <p class="body" style="text-align:center">This is the raw material your brand will be built from.</p>
+    <div class="gap-md"></div>
+    <div style="text-align:center">
+      <button class="btn btn-primary" onclick="goTo('screen-m2-customer')">Continue to Module 2</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ MODULE 2: AUDIENCE ═══════════════ -->
+
+  <!-- M2 Step 1: Dream Customer -->
+  <div class="screen" id="screen-m2-customer">
+    <div class="module-header">
+      <div class="module-tag">Module 2 — Audience & Problem</div>
+      <h2 class="display-lg">Your Dream Customer</h2>
+      <div class="step-indicator">Step 1 of 4</div>
+    </div>
+    <p class="body">Describe the specific person you want to serve. Not a demographic — a human. Give them a name if it helps.</p>
+    <div class="gap-md"></div>
+    <div class="input-group">
+      <label class="input-label">Who is this person? What's their life like?</label>
+      <textarea class="textarea-input" id="input-customer" placeholder="She's a 35-year-old creative director who..." rows="4" oninput="validateStep()"></textarea>
+      <p class="input-hint">Think about: What do they do? What do they care about? What keeps them up at 2am?</p>
+    </div>
+    <div class="spacer"></div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('screen-m1-summary')">Back</button>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="btn-m2-customer" onclick="goTo('screen-m2-problem')" disabled>Continue</button>
+    </div>
+  </div>
+
+  <!-- M2 Step 2: Their Problem -->
+  <div class="screen" id="screen-m2-problem">
+    <div class="module-header">
+      <div class="module-tag">Module 2 — Audience & Problem</div>
+      <h2 class="display-lg">Their Problem</h2>
+      <div class="step-indicator">Step 2 of 4</div>
+    </div>
+    <p class="body">What is the core problem your dream customer faces? Go deeper than the surface — find the emotional root.</p>
+    <div class="gap-md"></div>
+    <div class="input-group">
+      <label class="input-label">The surface problem (what they'd say out loud):</label>
+      <textarea class="textarea-input" id="input-problem-surface" placeholder="I can't find..." rows="2" oninput="validateStep()"></textarea>
+    </div>
+    <div class="input-group">
+      <label class="input-label">The deeper problem (what they actually feel):</label>
+      <textarea class="textarea-input" id="input-problem-deep" placeholder="I feel like..." rows="2" oninput="validateStep()"></textarea>
+      <p class="input-hint">The surface problem is what they google. The deeper problem is why they'll stay loyal to your brand.</p>
+    </div>
+    <div class="spacer"></div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('screen-m2-customer')">Back</button>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="btn-m2-problem" onclick="goTo('screen-m2-transform')" disabled>Continue</button>
+    </div>
+  </div>
+
+  <!-- M2 Step 3: Transformation -->
+  <div class="screen" id="screen-m2-transform">
+    <div class="module-header">
+      <div class="module-tag">Module 2 — Audience & Problem</div>
+      <h2 class="display-lg">The Transformation</h2>
+      <div class="step-indicator">Step 3 of 4</div>
+    </div>
+    <p class="body">What changes for your customer after they engage with your brand?</p>
+    <div class="gap-md"></div>
+    <div class="input-group">
+      <label class="input-label">BEFORE your brand, they feel:</label>
+      <textarea class="textarea-input" id="input-transform-before" placeholder="Lost, overwhelmed, settling for less..." rows="2" oninput="validateStep()"></textarea>
+    </div>
+    <div class="input-group">
+      <label class="input-label">AFTER your brand, they feel:</label>
+      <textarea class="textarea-input" id="input-transform-after" placeholder="Confident, clear, worthy of more..." rows="2" oninput="validateStep()"></textarea>
+    </div>
+    <div class="spacer"></div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('screen-m2-problem')">Back</button>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="btn-m2-transform" onclick="goTo('screen-m2-bridge')" disabled>Continue</button>
+    </div>
+  </div>
+
+  <!-- M2 Step 4: Unique Bridge -->
+  <div class="screen" id="screen-m2-bridge">
+    <div class="module-header">
+      <div class="module-tag">Module 2 — Audience & Problem</div>
+      <h2 class="display-lg">Your Unique Bridge</h2>
+      <div class="step-indicator">Step 4 of 4</div>
+    </div>
+    <p class="body">Why are YOU specifically the right person to help them? What combination of experience, skill, and perspective makes you uniquely qualified?</p>
+    <div class="gap-md"></div>
+    <div class="input-group">
+      <label class="input-label">What makes you the right guide for this transformation?</label>
+      <textarea class="textarea-input" id="input-bridge" placeholder="I've been where they are. I spent 10 years..." rows="4" oninput="validateStep()"></textarea>
+      <p class="input-hint">This connects your Foundation (Module 1) to your Audience. The overlap is your brand territory.</p>
+    </div>
+    <div class="spacer"></div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('screen-m2-transform')">Back</button>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="btn-m2-bridge" onclick="showM2Summary()" disabled>View Summary</button>
+    </div>
+  </div>
+
+  <!-- M2 Summary -->
+  <div class="screen" id="screen-m2-summary">
+    <div class="module-header">
+      <div class="module-tag">Module 2 — Complete</div>
+      <h2 class="display-lg">Your Audience</h2>
+    </div>
+    <div id="m2-summary-content"></div>
+    <div class="gap-lg"></div>
+    <p class="body" style="text-align:center">You know who you are and who you serve. Time to crystallize your identity.</p>
+    <div class="gap-md"></div>
+    <div style="text-align:center">
+      <button class="btn btn-primary" onclick="startQuiz()">Begin Archetype Discovery</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ MODULE 3: ARCHETYPE ═══════════════ -->
+
+  <!-- M3 Phase 1: Quiz -->
+  <div class="screen" id="screen-m3-quiz">
+    <div class="module-header">
+      <div class="module-tag">Module 3 — Archetype Discovery</div>
+      <h2 class="display-lg" id="quiz-title">The Discovery</h2>
+      <div class="step-indicator">Phase 1 of 3</div>
+    </div>
+    <div class="quiz-counter" id="quiz-counter">Question 1 of 24</div>
+    <div class="gap-sm"></div>
+    <div class="quiz-question" id="quiz-question"></div>
+    <div class="quiz-options" id="quiz-options"></div>
+    <div class="spacer"></div>
+    <div class="btn-row">
+      <button class="btn-back" id="quiz-back-btn" onclick="quizBack()">Back</button>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="quiz-next-btn" onclick="quizNext()" disabled>Next</button>
+    </div>
+  </div>
+
+  <!-- M3 Phase 2: Calibration -->
+  <div class="screen" id="screen-m3-calibrate">
+    <div class="module-header">
+      <div class="module-tag">Module 3 — Tension Calibration</div>
+      <h2 class="display-lg">Calibrate Your Blend</h2>
+      <div class="step-indicator">Phase 2 of 3</div>
+    </div>
+    <p class="body">Your top two archetypes are <strong id="cal-arch1"></strong> and <strong id="cal-arch2"></strong>. Now let's find the precise blend. For each tension, move the slider toward the pole that feels more like YOUR brand.</p>
+    <div class="gap-lg"></div>
+    <div id="tensions-container"></div>
+    <div class="gap-md"></div>
+    <div style="text-align:center">
+      <button class="btn btn-primary" onclick="generateResults()">Reveal My Archetype</button>
+    </div>
+  </div>
+
+  <!-- M3 Phase 3: Results -->
+  <div class="screen" id="screen-m3-results">
+    <div class="module-header">
+      <div class="module-tag">Module 3 — Your Archetype</div>
+      <h2 class="display-lg">The Reveal</h2>
+      <div class="step-indicator">Phase 3 of 3</div>
+    </div>
+    <div id="results-content"></div>
+    <div class="gap-xl"></div>
+    <div style="text-align:center">
+      <p class="body" style="margin-bottom:1rem">Modules 4–10 coming soon: Positioning, Brand Promise, Story, Voice, Visual Identity, Content Architecture, Brand System.</p>
+      <button class="btn btn-secondary" onclick="exportResults()">Export Results</button>
+    </div>
+  </div>
+
+</div><!-- .app -->
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════
+
+const ARCHETYPES = {
+  innocent: {
+    name: "The Innocent",
+    motto: "Free to be you and me",
+    desire: "To experience paradise",
+    goal: "To be happy and do things right",
+    fear: "Doing something wrong",
+    strategy: "Do things right, be pure",
+    gift: "Faith, optimism, simplicity",
+    shadow: "Denial, naivety",
+    brands: "Dove, Coca-Cola, Whole Foods"
+  },
+  explorer: {
+    name: "The Explorer",
+    motto: "Don't fence me in",
+    desire: "Freedom to discover who you are",
+    goal: "A more authentic, fulfilling life",
+    fear: "Being trapped, conformity, emptiness",
+    strategy: "Journey, seek new experiences",
+    gift: "Autonomy, ambition, authenticity",
+    shadow: "Aimless wandering, alienation",
+    brands: "Patagonia, Jeep, The North Face"
+  },
+  sage: {
+    name: "The Sage",
+    motto: "The truth will set you free",
+    desire: "To find truth and understanding",
+    goal: "Use intelligence to understand the world",
+    fear: "Being misled or ignorant",
+    strategy: "Seek information and knowledge",
+    gift: "Wisdom and intelligence",
+    shadow: "Dogmatism, ivory tower detachment",
+    brands: "Google, TED, The Economist"
+  },
+  hero: {
+    name: "The Hero",
+    motto: "Where there's a will, there's a way",
+    desire: "To prove worth through courage",
+    goal: "Expert mastery that improves the world",
+    fear: "Weakness and vulnerability",
+    strategy: "Be as strong and competent as possible",
+    gift: "Competence and courage",
+    shadow: "Arrogance, ruthless ambition",
+    brands: "Nike, FedEx, BMW"
+  },
+  outlaw: {
+    name: "The Outlaw",
+    motto: "Rules are made to be broken",
+    desire: "Revolution or radical freedom",
+    goal: "Overturn what isn't working",
+    fear: "Being powerless or insignificant",
+    strategy: "Disrupt, destroy, shock",
+    gift: "Outrageous freedom, radical change",
+    shadow: "Crossing to the dark side, crime",
+    brands: "Harley-Davidson, Virgin, Diesel"
+  },
+  magician: {
+    name: "The Magician",
+    motto: "I make things happen",
+    desire: "Understanding fundamental laws",
+    goal: "Make dreams come true",
+    fear: "Unintended negative consequences",
+    strategy: "Develop a vision and live by it",
+    gift: "Finding win-win outcomes, transformation",
+    shadow: "Manipulation, disconnection from reality",
+    brands: "Apple, Tesla, Disney"
+  },
+  everyman: {
+    name: "The Everyman",
+    motto: "All for one and one for all",
+    desire: "Belonging and connection",
+    goal: "To fit in, to belong",
+    fear: "Being left out or standing out",
+    strategy: "Be down to earth, develop solid virtues",
+    gift: "Realism, empathy, lack of pretense",
+    shadow: "Losing self to blend in, mob mentality",
+    brands: "IKEA, Target, Budweiser"
+  },
+  lover: {
+    name: "The Lover",
+    motto: "You're the only one",
+    desire: "Intimacy, beauty, and experience",
+    goal: "Deep relationships with people and experiences",
+    fear: "Being alone, unwanted, unloved",
+    strategy: "Become ever more attractive and connected",
+    gift: "Passion, gratitude, devotion, beauty",
+    shadow: "Obsession, jealousy, loss of identity",
+    brands: "Chanel, Godiva, Alfa Romeo"
+  },
+  jester: {
+    name: "The Jester",
+    motto: "You only live once",
+    desire: "To live in the moment with full enjoyment",
+    goal: "Have a great time, lighten the world",
+    fear: "Being boring or bored",
+    strategy: "Play, make jokes, be funny",
+    gift: "Joy, freedom, lightness",
+    shadow: "Cruelty, frivolity, irresponsibility",
+    brands: "M&M's, Old Spice, Dollar Shave Club"
+  },
+  caregiver: {
+    name: "The Caregiver",
+    motto: "Love your neighbor as yourself",
+    desire: "To protect and care for others",
+    goal: "Help others, serve generously",
+    fear: "Selfishness, ingratitude",
+    strategy: "Do things for others",
+    gift: "Compassion, generosity, warmth",
+    shadow: "Martyrdom, enabling, guilt-tripping",
+    brands: "Johnson & Johnson, Volvo, TOMS"
+  },
+  creator: {
+    name: "The Creator",
+    motto: "If you can imagine it, it can be done",
+    desire: "To create things of enduring value",
+    goal: "Realize a vision, give form to imagination",
+    fear: "Mediocre vision or execution",
+    strategy: "Develop artistic control and skill",
+    gift: "Creativity, imagination, self-expression",
+    shadow: "Perfectionism, self-indulgence",
+    brands: "Apple, Lego, Adobe"
+  },
+  ruler: {
+    name: "The Ruler",
+    motto: "Power isn't everything — it's the only thing",
+    desire: "Control and order",
+    goal: "Create a prosperous, successful community",
+    fear: "Chaos, being overthrown",
+    strategy: "Exercise leadership and responsibility",
+    gift: "Responsibility, leadership, stability",
+    shadow: "Tyranny, authoritarianism, rigidity",
+    brands: "Mercedes-Benz, Rolex, Microsoft"
+  }
+};
+
+const VALUES = [
+  "Authenticity", "Beauty", "Courage", "Creativity", "Curiosity",
+  "Excellence", "Freedom", "Generosity", "Growth", "Honesty",
+  "Impact", "Independence", "Innovation", "Integrity", "Joy",
+  "Justice", "Knowledge", "Leadership", "Love", "Mastery",
+  "Service", "Simplicity", "Truth", "Wisdom"
+];
+
+const ANTI_VALUES = [
+  "Mediocrity", "Dishonesty", "Conformity", "Greed", "Superficiality",
+  "Cruelty", "Laziness", "Cynicism", "Manipulation", "Arrogance",
+  "Cowardice", "Waste", "Pretension", "Injustice", "Apathy",
+  "Recklessness", "Complacency", "Hypocrisy"
+];
+
+const QUESTIONS = [
+  {
+    q: "You're starting a new project. What's your first instinct?",
+    opts: [
+      { text: "Research everything about it first — understand the landscape before moving", scores: { sage: 2, magician: 1 } },
+      { text: "Just dive in and figure it out as you go — momentum over planning", scores: { explorer: 2, hero: 1 } },
+      { text: "Find the right people to collaborate with — great work is never solo", scores: { everyman: 2, caregiver: 1 } },
+      { text: "Imagine the most audacious version possible — dream before you plan", scores: { creator: 2, outlaw: 1 } }
+    ]
+  },
+  {
+    q: "At a dinner party, you're naturally drawn to...",
+    opts: [
+      { text: "The person telling a captivating story — you can feel the room shift around them", scores: { lover: 2, magician: 1 } },
+      { text: "The person cracking jokes — life's too short for serious conversation all night", scores: { jester: 2, everyman: 1 } },
+      { text: "The person with the most unconventional perspective — they see what others don't", scores: { outlaw: 2, explorer: 1 } },
+      { text: "The person who genuinely cares about everyone — warmth over cleverness", scores: { caregiver: 2, innocent: 1 } }
+    ]
+  },
+  {
+    q: "When you succeed at something, what matters most?",
+    opts: [
+      { text: "That you did it with integrity — the how matters as much as the what", scores: { innocent: 2, ruler: 1 } },
+      { text: "That it pushes the field forward — your success should open doors for others", scores: { hero: 2, creator: 1 } },
+      { text: "That it creates a meaningful connection — between you and the people you serve", scores: { lover: 2, caregiver: 1 } },
+      { text: "That you figured out something nobody else saw — the insight is the reward", scores: { sage: 2, magician: 1 } }
+    ]
+  },
+  {
+    q: "What frustrates you most about your industry?",
+    opts: [
+      { text: "Everyone plays it safe and follows trends instead of leading", scores: { outlaw: 2, creator: 1 } },
+      { text: "People prioritize profit over genuine value and human connection", scores: { innocent: 2, caregiver: 1 } },
+      { text: "There's no real leadership or vision — just incremental thinking", scores: { ruler: 2, hero: 1 } },
+      { text: "People take themselves too seriously and forget to enjoy the work", scores: { jester: 2, explorer: 1 } }
+    ]
+  },
+  {
+    q: "Your ideal morning starts with...",
+    opts: [
+      { text: "Quiet reflection and planning — structure creates freedom", scores: { sage: 2, ruler: 1 } },
+      { text: "Something spontaneous and energizing — routine kills creativity", scores: { explorer: 2, jester: 1 } },
+      { text: "Creating something — writing, sketching, building, anything with your hands", scores: { creator: 2, magician: 1 } },
+      { text: "Connecting with people you care about — relationships fuel everything", scores: { lover: 2, everyman: 1 } }
+    ]
+  },
+  {
+    q: "When facing a major challenge, you tend to...",
+    opts: [
+      { text: "Rally others and take charge — someone needs to lead", scores: { hero: 2, ruler: 1 } },
+      { text: "Find the unconventional approach nobody's tried yet", scores: { magician: 2, outlaw: 1 } },
+      { text: "Stay positive and trust it'll work out — panic helps nobody", scores: { innocent: 2, jester: 1 } },
+      { text: "Step back and analyze — understand the full picture before acting", scores: { sage: 2, creator: 1 } }
+    ]
+  },
+  {
+    q: "People come to you because...",
+    opts: [
+      { text: "You make them feel seen, valued, and understood", scores: { lover: 2, caregiver: 1 } },
+      { text: "You have knowledge and insight they can't find elsewhere", scores: { sage: 2, magician: 1 } },
+      { text: "You challenge them to think differently about everything", scores: { outlaw: 2, explorer: 1 } },
+      { text: "You bring order and clarity to chaos", scores: { ruler: 2, hero: 1 } }
+    ]
+  },
+  {
+    q: "What kind of content would you most enjoy creating?",
+    opts: [
+      { text: "Deep, thought-provoking essays and talks that shift perspectives", scores: { sage: 2, creator: 1 } },
+      { text: "Stories that move people emotionally — beauty and meaning woven together", scores: { lover: 2, magician: 1 } },
+      { text: "Practical guides that help people achieve real, tangible goals", scores: { hero: 2, caregiver: 1 } },
+      { text: "Bold, provocative pieces that challenge norms and spark debate", scores: { outlaw: 2, jester: 1 } }
+    ]
+  },
+  {
+    q: "Your personal style is best described as...",
+    opts: [
+      { text: "Classic and refined — quality over trends, always", scores: { ruler: 2, sage: 1 } },
+      { text: "Expressive and distinctive — your aesthetic IS your message", scores: { creator: 2, lover: 1 } },
+      { text: "Approachable and authentic — no pretense, what you see is what you get", scores: { everyman: 2, innocent: 1 } },
+      { text: "Bold and unconventional — you'd rather be interesting than appropriate", scores: { outlaw: 2, explorer: 1 } }
+    ]
+  },
+  {
+    q: "When you envision your brand 5 years from now, you see...",
+    opts: [
+      { text: "A trusted authority — the go-to name in your space", scores: { sage: 2, ruler: 1 } },
+      { text: "A movement that changes how people think and act", scores: { outlaw: 2, magician: 1 } },
+      { text: "A community built around shared values and mutual support", scores: { everyman: 2, caregiver: 1 } },
+      { text: "Something beautiful that inspires people to create and appreciate more", scores: { creator: 2, lover: 1 } }
+    ]
+  },
+  {
+    q: "Your relationship with money is...",
+    opts: [
+      { text: "A tool to build something lasting and meaningful", scores: { ruler: 2, creator: 1 } },
+      { text: "Freedom to explore, experience, and live fully", scores: { explorer: 2, jester: 1 } },
+      { text: "A way to help and support the people who matter to you", scores: { caregiver: 2, innocent: 1 } },
+      { text: "Earned through mastery — fair exchange for real expertise", scores: { hero: 2, sage: 1 } }
+    ]
+  },
+  {
+    q: "A friend describes you to someone who hasn't met you. They say...",
+    opts: [
+      { text: "\"They're the most passionate person I know — everything they touch has intensity\"", scores: { lover: 2, creator: 1 } },
+      { text: "\"They'll inspire you to be better — they bring out what you didn't know was there\"", scores: { hero: 2, magician: 1 } },
+      { text: "\"They're the most real person you'll meet — zero pretense, total substance\"", scores: { everyman: 2, explorer: 1 } },
+      { text: "\"They see the world completely differently — conversations with them change you\"", scores: { sage: 2, outlaw: 1 } }
+    ]
+  },
+  {
+    q: "Your biggest fear in building your brand is...",
+    opts: [
+      { text: "Being inauthentic — losing yourself in the process of packaging yourself", scores: { innocent: 2, explorer: 1 } },
+      { text: "Being boring — creating something forgettable in a sea of noise", scores: { jester: 2, creator: 1 } },
+      { text: "Being wrong — misleading people who trusted you", scores: { sage: 2, caregiver: 1 } },
+      { text: "Being weak — failing publicly when it mattered most", scores: { hero: 2, ruler: 1 } }
+    ]
+  },
+  {
+    q: "In conflict, you tend to...",
+    opts: [
+      { text: "Stand firm on your principles — some things aren't negotiable", scores: { hero: 2, outlaw: 1 } },
+      { text: "Find a way to bring people together — division weakens everyone", scores: { caregiver: 2, everyman: 1 } },
+      { text: "Step back and see the bigger picture — most conflicts dissolve with perspective", scores: { sage: 2, magician: 1 } },
+      { text: "Lighten the mood and redirect — tension is rarely productive", scores: { jester: 2, innocent: 1 } }
+    ]
+  },
+  {
+    q: "The word that resonates most with your personal mission...",
+    opts: [
+      { text: "Beauty — life should be experienced as something extraordinary", scores: { lover: 2, creator: 1 } },
+      { text: "Truth — people deserve honesty in a world of spin", scores: { sage: 2, innocent: 1 } },
+      { text: "Freedom — the ability to live and create on your own terms", scores: { explorer: 2, outlaw: 1 } },
+      { text: "Impact — making a real, measurable difference in the world", scores: { hero: 2, ruler: 1 } }
+    ]
+  },
+  {
+    q: "When you look at brands you admire, they...",
+    opts: [
+      { text: "Stand for something meaningful beyond profit — their cause is real", scores: { innocent: 2, caregiver: 1 } },
+      { text: "Create experiences that are unforgettable — you FEEL something", scores: { lover: 2, magician: 1 } },
+      { text: "Own their category with quiet, absolute confidence", scores: { ruler: 2, hero: 1 } },
+      { text: "Break every rule and make it look effortless", scores: { outlaw: 2, jester: 1 } }
+    ]
+  },
+  {
+    q: "Your greatest strength is...",
+    opts: [
+      { text: "Making complex things clear and understandable", scores: { sage: 2, everyman: 1 } },
+      { text: "Seeing possibilities that others miss entirely", scores: { magician: 2, explorer: 1 } },
+      { text: "Creating deep trust and genuine human connection", scores: { lover: 2, caregiver: 1 } },
+      { text: "Taking decisive action when everyone else hesitates", scores: { hero: 2, outlaw: 1 } }
+    ]
+  },
+  {
+    q: "How do you want people to FEEL after interacting with your brand?",
+    opts: [
+      { text: "Empowered — like they can do things they couldn't before", scores: { hero: 2, magician: 1 } },
+      { text: "Inspired — elevated by beauty, meaning, or possibility", scores: { creator: 2, lover: 1 } },
+      { text: "Understood — like someone finally gets them", scores: { everyman: 2, caregiver: 1 } },
+      { text: "Awakened — seeing something they were blind to before", scores: { outlaw: 2, sage: 1 } }
+    ]
+  },
+  {
+    q: "Your approach to learning is...",
+    opts: [
+      { text: "Deep study — you want mastery, not surface knowledge", scores: { sage: 2, creator: 1 } },
+      { text: "Learning by doing — experience teaches what books can't", scores: { explorer: 2, hero: 1 } },
+      { text: "Learning from people — relationships are the best teachers", scores: { lover: 2, everyman: 1 } },
+      { text: "Questioning everything — you don't accept conventional wisdom", scores: { outlaw: 2, magician: 1 } }
+    ]
+  },
+  {
+    q: "The legacy you want to leave is...",
+    opts: [
+      { text: "Wisdom that outlasts you — ideas that continue to matter", scores: { sage: 2, ruler: 1 } },
+      { text: "A world that's more beautiful — art, design, experience elevated", scores: { creator: 2, lover: 1 } },
+      { text: "People who are free to be themselves — liberation as inheritance", scores: { explorer: 2, outlaw: 1 } },
+      { text: "People who were helped when they needed it most", scores: { caregiver: 2, innocent: 1 } }
+    ]
+  },
+  {
+    q: "What drives you to share your work publicly?",
+    opts: [
+      { text: "People deserve access to beauty and meaning — not just those who can afford it", scores: { lover: 2, innocent: 1 } },
+      { text: "Someone needs to say what nobody else will — truth demands a voice", scores: { outlaw: 2, hero: 1 } },
+      { text: "You've figured out something worth sharing — knowledge should flow freely", scores: { sage: 2, magician: 1 } },
+      { text: "We're stronger together — community creates what individuals can't", scores: { everyman: 2, caregiver: 1 } }
+    ]
+  },
+  {
+    q: "Your non-negotiable in business...",
+    opts: [
+      { text: "Quality — nothing goes out that isn't excellent", scores: { creator: 2, ruler: 1 } },
+      { text: "Honesty — total transparency, even when it's uncomfortable", scores: { innocent: 2, sage: 1 } },
+      { text: "Courage — never diluting your message to fit in", scores: { hero: 2, outlaw: 1 } },
+      { text: "Joy — if the process isn't enjoyable, something is wrong", scores: { jester: 2, explorer: 1 } }
+    ]
+  },
+  {
+    q: "The environment you'd love to work in...",
+    opts: [
+      { text: "A beautiful, curated studio — every detail intentional", scores: { creator: 2, lover: 1 } },
+      { text: "A buzzing headquarters with a great team around you", scores: { ruler: 2, everyman: 1 } },
+      { text: "Anywhere with a view, fresh air, and space to think", scores: { explorer: 2, innocent: 1 } },
+      { text: "A library full of ideas — books, whiteboards, and silence", scores: { sage: 2, magician: 1 } }
+    ]
+  },
+  {
+    q: "When you close your eyes and imagine your brand at its peak, the image is...",
+    opts: [
+      { text: "A packed room, rapt attention — your words landing like they matter", scores: { magician: 2, hero: 1 } },
+      { text: "A beautiful space where every detail tells a story", scores: { lover: 2, creator: 1 } },
+      { text: "A thriving community of people transformed by what you built", scores: { caregiver: 2, ruler: 1 } },
+      { text: "An open road — infinite possibility, no ceiling in sight", scores: { explorer: 2, jester: 1 } }
+    ]
+  }
+];
+
+const TENSIONS = [
+  { left: "Heart", right: "Mind", desc: "Do you lead with emotional resonance or intellectual authority?",
+    mapping: { innocent: 25, explorer: 30, sage: 80, hero: 70, outlaw: 35, magician: 65, everyman: 30, lover: 20, jester: 25, caregiver: 25, creator: 55, ruler: 75 }},
+  { left: "Bold", right: "Subtle", desc: "Is your presence loud and undeniable, or quiet and magnetic?",
+    mapping: { innocent: 65, explorer: 30, sage: 70, hero: 25, outlaw: 15, magician: 40, everyman: 70, lover: 35, jester: 20, caregiver: 65, creator: 30, ruler: 30 }},
+  { left: "Pioneer", right: "Preserver", desc: "Do you break new ground, or honor and protect what works?",
+    mapping: { innocent: 70, explorer: 20, sage: 55, hero: 30, outlaw: 10, magician: 25, everyman: 65, lover: 60, jester: 30, caregiver: 70, creator: 20, ruler: 60 }},
+  { left: "Individual", right: "Collective", desc: "Does your brand champion personal distinction or shared belonging?",
+    mapping: { innocent: 60, explorer: 20, sage: 45, hero: 25, outlaw: 15, magician: 30, everyman: 80, lover: 30, jester: 55, caregiver: 70, creator: 25, ruler: 55 }},
+  { left: "Playful", right: "Serious", desc: "Is your energy light and energizing, or deep and weighty?",
+    mapping: { innocent: 40, explorer: 35, sage: 75, hero: 70, outlaw: 40, magician: 65, everyman: 40, lover: 60, jester: 10, caregiver: 60, creator: 50, ruler: 80 }},
+  { left: "Action", right: "Contemplation", desc: "Do you lead by doing, or by thinking and reflecting?",
+    mapping: { innocent: 55, explorer: 30, sage: 80, hero: 15, outlaw: 25, magician: 60, everyman: 35, lover: 60, jester: 25, caregiver: 30, creator: 45, ruler: 35 }},
+  { left: "Structure", right: "Flow", desc: "Do you create order and systems, or move organically and intuitively?",
+    mapping: { innocent: 60, explorer: 80, sage: 35, hero: 35, outlaw: 75, magician: 65, everyman: 55, lover: 70, jester: 80, caregiver: 40, creator: 60, ruler: 20 }},
+  { left: "Intimate", right: "Universal", desc: "Is your impact close and personal, or broad and sweeping?",
+    mapping: { innocent: 55, explorer: 60, sage: 70, hero: 65, outlaw: 40, magician: 60, everyman: 35, lover: 20, jester: 55, caregiver: 30, creator: 40, ruler: 65 }}
+];
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+
+const state = {
+  currentScreen: 'screen-landing',
+  m1: { why: '', values: [], antiValues: [], storyMoment: '', storyUnique: '', storyFix: '' },
+  m2: { customer: '', problemSurface: '', problemDeep: '', transformBefore: '', transformAfter: '', bridge: '' },
+  m3: {
+    scores: {},
+    answers: [],
+    currentQuestion: 0,
+    topTwo: [],
+    tensions: [50,50,50,50,50,50,50,50],
+    ratio: null
+  }
+};
+
+// Init scores
+Object.keys(ARCHETYPES).forEach(k => state.m3.scores[k] = 0);
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+
+const SCREEN_ORDER = [
+  'screen-landing',
+  'screen-m1-why', 'screen-m1-values', 'screen-m1-antivalues', 'screen-m1-story', 'screen-m1-summary',
+  'screen-m2-customer', 'screen-m2-problem', 'screen-m2-transform', 'screen-m2-bridge', 'screen-m2-summary',
+  'screen-m3-quiz', 'screen-m3-calibrate', 'screen-m3-results'
+];
+
+function goTo(screenId) {
+  saveCurrentInputs();
+  const prev = document.querySelector('.screen.active');
+  if (prev) {
+    prev.classList.remove('active');
+    prev.style.display = 'none';
+  }
+  const next = document.getElementById(screenId);
+  next.style.display = '';
+  // Force reflow for animation
+  void next.offsetWidth;
+  next.classList.add('active');
+  state.currentScreen = screenId;
+  updateProgress();
+  window.scrollTo(0, 0);
+  restoreInputs(screenId);
+  validateStep();
+}
+
+function updateProgress() {
+  const idx = SCREEN_ORDER.indexOf(state.currentScreen);
+  const pct = Math.round((idx / (SCREEN_ORDER.length - 1)) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  const nav = document.getElementById('progressNav');
+  if (state.currentScreen === 'screen-landing') {
+    nav.classList.remove('visible');
+    return;
+  }
+  nav.classList.add('visible');
+
+  const dots = nav.querySelectorAll('.progress-dot');
+  let currentModule = 0;
+  if (state.currentScreen.includes('m1')) currentModule = 1;
+  else if (state.currentScreen.includes('m2')) currentModule = 2;
+  else if (state.currentScreen.includes('m3')) currentModule = 3;
+
+  dots.forEach(dot => {
+    const m = parseInt(dot.dataset.module);
+    dot.classList.remove('active', 'done');
+    if (m < currentModule) dot.classList.add('done');
+    else if (m === currentModule) dot.classList.add('active');
+  });
+
+  const labels = { 1: 'Foundation', 2: 'Audience', 3: 'Archetype' };
+  document.getElementById('progressLabel').textContent = labels[currentModule] || '';
+}
+
+// ═══════════════════════════════════════════════
+// INPUT SAVE / RESTORE
+// ═══════════════════════════════════════════════
+
+function saveCurrentInputs() {
+  const s = state.currentScreen;
+  if (s === 'screen-m1-why') state.m1.why = gv('input-why');
+  if (s === 'screen-m1-story') {
+    state.m1.storyMoment = gv('input-story-moment');
+    state.m1.storyUnique = gv('input-story-unique');
+    state.m1.storyFix = gv('input-story-fix');
+  }
+  if (s === 'screen-m2-customer') state.m2.customer = gv('input-customer');
+  if (s === 'screen-m2-problem') {
+    state.m2.problemSurface = gv('input-problem-surface');
+    state.m2.problemDeep = gv('input-problem-deep');
+  }
+  if (s === 'screen-m2-transform') {
+    state.m2.transformBefore = gv('input-transform-before');
+    state.m2.transformAfter = gv('input-transform-after');
+  }
+  if (s === 'screen-m2-bridge') state.m2.bridge = gv('input-bridge');
+}
+
+function restoreInputs(screenId) {
+  if (screenId === 'screen-m1-why') sv('input-why', state.m1.why);
+  if (screenId === 'screen-m1-story') {
+    sv('input-story-moment', state.m1.storyMoment);
+    sv('input-story-unique', state.m1.storyUnique);
+    sv('input-story-fix', state.m1.storyFix);
+  }
+  if (screenId === 'screen-m2-customer') sv('input-customer', state.m2.customer);
+  if (screenId === 'screen-m2-problem') {
+    sv('input-problem-surface', state.m2.problemSurface);
+    sv('input-problem-deep', state.m2.problemDeep);
+  }
+  if (screenId === 'screen-m2-transform') {
+    sv('input-transform-before', state.m2.transformBefore);
+    sv('input-transform-after', state.m2.transformAfter);
+  }
+  if (screenId === 'screen-m2-bridge') sv('input-bridge', state.m2.bridge);
+}
+
+function gv(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+function sv(id, val) { const el = document.getElementById(id); if (el) el.value = val; }
+
+// ═══════════════════════════════════════════════
+// VALIDATION
+// ═══════════════════════════════════════════════
+
+function validateStep() {
+  const s = state.currentScreen;
+  if (s === 'screen-m1-why') {
+    toggle('btn-m1-why', gv('input-why').trim().length > 5);
+  }
+  if (s === 'screen-m1-values') {
+    toggle('btn-m1-values', state.m1.values.length === 5);
+  }
+  if (s === 'screen-m1-antivalues') {
+    toggle('btn-m1-antivalues', state.m1.antiValues.length === 3);
+  }
+  if (s === 'screen-m1-story') {
+    toggle('btn-m1-story',
+      gv('input-story-moment').trim().length > 5 &&
+      gv('input-story-unique').trim().length > 5 &&
+      gv('input-story-fix').trim().length > 5
+    );
+  }
+  if (s === 'screen-m2-customer') {
+    toggle('btn-m2-customer', gv('input-customer').trim().length > 10);
+  }
+  if (s === 'screen-m2-problem') {
+    toggle('btn-m2-problem',
+      gv('input-problem-surface').trim().length > 5 &&
+      gv('input-problem-deep').trim().length > 5
+    );
+  }
+  if (s === 'screen-m2-transform') {
+    toggle('btn-m2-transform',
+      gv('input-transform-before').trim().length > 5 &&
+      gv('input-transform-after').trim().length > 5
+    );
+  }
+  if (s === 'screen-m2-bridge') {
+    toggle('btn-m2-bridge', gv('input-bridge').trim().length > 10);
+  }
+}
+
+function toggle(btnId, enabled) {
+  const btn = document.getElementById(btnId);
+  if (btn) btn.disabled = !enabled;
+}
+
+// ═══════════════════════════════════════════════
+// CHIP GRIDS (Values, Anti-Values)
+// ═══════════════════════════════════════════════
+
+function renderChips(gridId, items, stateKey, max, countId) {
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = '';
+  items.forEach(item => {
+    const chip = document.createElement('div');
+    chip.className = 'chip' + (state.m1[stateKey].includes(item) ? ' selected' : '');
+    chip.textContent = item;
+    chip.onclick = () => {
+      const arr = state.m1[stateKey];
+      const idx = arr.indexOf(item);
+      if (idx > -1) {
+        arr.splice(idx, 1);
+        chip.classList.remove('selected');
+      } else if (arr.length < max) {
+        arr.push(item);
+        chip.classList.add('selected');
+      }
+      document.getElementById(countId).textContent = arr.length;
+      validateStep();
+    };
+    grid.appendChild(chip);
+  });
+}
+
+// ═══════════════════════════════════════════════
+// MODULE SUMMARIES
+// ═══════════════════════════════════════════════
+
+function showM1Summary() {
+  saveCurrentInputs();
+  const el = document.getElementById('m1-summary-content');
+  el.innerHTML = `
+    <div class="summary-section">
+      <span class="label">Your WHY</span>
+      <div class="summary-value">"I believe ${esc(state.m1.why)}"</div>
+    </div>
+    <div class="summary-section">
+      <span class="label">Core Values</span>
+      <div class="summary-chips">${state.m1.values.map(v => `<span class="summary-chip">${esc(v)}</span>`).join('')}</div>
+    </div>
+    <div class="summary-section">
+      <span class="label">What You Refuse</span>
+      <div class="summary-chips">${state.m1.antiValues.map(v => `<span class="summary-chip">${esc(v)}</span>`).join('')}</div>
+    </div>
+    <div class="summary-section">
+      <span class="label">The Moment</span>
+      <div class="summary-value">"${esc(state.m1.storyMoment)}"</div>
+    </div>
+    <div class="summary-section">
+      <span class="label">Your Edge</span>
+      <div class="summary-value">"${esc(state.m1.storyUnique)}"</div>
+    </div>
+    <div class="summary-section">
+      <span class="label">What You'd Fix</span>
+      <div class="summary-value">"${esc(state.m1.storyFix)}"</div>
+    </div>
+  `;
+  goTo('screen-m1-summary');
+}
+
+function showM2Summary() {
+  saveCurrentInputs();
+  const el = document.getElementById('m2-summary-content');
+  el.innerHTML = `
+    <div class="summary-section">
+      <span class="label">Dream Customer</span>
+      <div class="summary-value">"${esc(state.m2.customer)}"</div>
+    </div>
+    <div class="summary-section">
+      <span class="label">Surface Problem</span>
+      <div class="summary-value">"${esc(state.m2.problemSurface)}"</div>
+    </div>
+    <div class="summary-section">
+      <span class="label">Deeper Problem</span>
+      <div class="summary-value">"${esc(state.m2.problemDeep)}"</div>
+    </div>
+    <div class="summary-section">
+      <span class="label">The Transformation</span>
+      <div class="summary-value">Before: "${esc(state.m2.transformBefore)}"</div>
+      <div class="summary-value" style="margin-top:0.5rem">After: "${esc(state.m2.transformAfter)}"</div>
+    </div>
+    <div class="summary-section">
+      <span class="label">Your Unique Bridge</span>
+      <div class="summary-value">"${esc(state.m2.bridge)}"</div>
+    </div>
+  `;
+  goTo('screen-m2-summary');
+}
+
+// ═══════════════════════════════════════════════
+// QUIZ (Module 3 Phase 1)
+// ═══════════════════════════════════════════════
+
+function startQuiz() {
+  state.m3.currentQuestion = 0;
+  state.m3.answers = [];
+  Object.keys(state.m3.scores).forEach(k => state.m3.scores[k] = 0);
+  renderQuizQuestion();
+  goTo('screen-m3-quiz');
+}
+
+function renderQuizQuestion() {
+  const qi = state.m3.currentQuestion;
+  const q = QUESTIONS[qi];
+  document.getElementById('quiz-counter').textContent = `Question ${qi + 1} of ${QUESTIONS.length}`;
+  document.getElementById('quiz-question').textContent = q.q;
+
+  const letters = ['a', 'b', 'c', 'd'];
+  const container = document.getElementById('quiz-options');
+  container.innerHTML = '';
+
+  q.opts.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-option' + (state.m3.answers[qi] === i ? ' selected' : '');
+    div.setAttribute('data-letter', letters[i]);
+    div.textContent = opt.text;
+    div.onclick = () => selectQuizOption(i);
+    container.appendChild(div);
+  });
+
+  const backBtn = document.getElementById('quiz-back-btn');
+  backBtn.onclick = qi === 0 ? () => goTo('screen-m2-summary') : () => quizBack();
+
+  toggle('quiz-next-btn', state.m3.answers[qi] !== undefined);
+
+  const nextBtn = document.getElementById('quiz-next-btn');
+  nextBtn.textContent = qi === QUESTIONS.length - 1 ? 'See Results' : 'Next';
+}
+
+function selectQuizOption(idx) {
+  const qi = state.m3.currentQuestion;
+  // Unselect previous
+  document.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+  // Select new
+  document.querySelectorAll('.quiz-option')[idx].classList.add('selected');
+  state.m3.answers[qi] = idx;
+  toggle('quiz-next-btn', true);
+}
+
+function quizNext() {
+  const qi = state.m3.currentQuestion;
+  if (state.m3.answers[qi] === undefined) return;
+
+  // Score this answer
+  const q = QUESTIONS[qi];
+  const chosen = q.opts[state.m3.answers[qi]];
+  // Recalculate all scores from scratch to handle back/change
+  recalcScores();
+
+  if (qi < QUESTIONS.length - 1) {
+    state.m3.currentQuestion++;
+    renderQuizQuestion();
+    // Re-animate
+    const screen = document.getElementById('screen-m3-quiz');
+    screen.style.animation = 'none';
+    void screen.offsetWidth;
+    screen.style.animation = '';
+  } else {
+    finishQuiz();
+  }
+}
+
+function quizBack() {
+  if (state.m3.currentQuestion > 0) {
+    state.m3.currentQuestion--;
+    renderQuizQuestion();
+  }
+}
+
+function recalcScores() {
+  Object.keys(state.m3.scores).forEach(k => state.m3.scores[k] = 0);
+  state.m3.answers.forEach((ansIdx, qi) => {
+    if (ansIdx !== undefined) {
+      const scores = QUESTIONS[qi].opts[ansIdx].scores;
+      Object.keys(scores).forEach(arch => {
+        state.m3.scores[arch] += scores[arch];
+      });
+    }
+  });
+}
+
+function finishQuiz() {
+  recalcScores();
+  // Rank archetypes
+  const ranked = Object.entries(state.m3.scores)
+    .sort((a, b) => b[1] - a[1]);
+
+  state.m3.topTwo = [ranked[0][0], ranked[1][0]];
+  showCalibration();
+}
+
+// ═══════════════════════════════════════════════
+// CALIBRATION (Module 3 Phase 2)
+// ═══════════════════════════════════════════════
+
+function showCalibration() {
+  const [a1, a2] = state.m3.topTwo;
+  document.getElementById('cal-arch1').textContent = ARCHETYPES[a1].name;
+  document.getElementById('cal-arch2').textContent = ARCHETYPES[a2].name;
+
+  const container = document.getElementById('tensions-container');
+  container.innerHTML = '';
+
+  TENSIONS.forEach((t, i) => {
+    // Determine which pole each archetype leans toward
+    const a1val = t.mapping[a1]; // 0=left, 100=right
+    const a2val = t.mapping[a2];
+
+    // If archetypes are too similar on this axis, skip it
+    if (Math.abs(a1val - a2val) < 15) return;
+
+    // Determine labels: put each archetype name on its leaning side
+    let leftLabel, rightLabel;
+    if (a1val < a2val) {
+      leftLabel = `${t.left} · ${ARCHETYPES[a1].name.replace('The ', '')}`;
+      rightLabel = `${t.right} · ${ARCHETYPES[a2].name.replace('The ', '')}`;
+    } else {
+      leftLabel = `${t.left} · ${ARCHETYPES[a2].name.replace('The ', '')}`;
+      rightLabel = `${t.right} · ${ARCHETYPES[a1].name.replace('The ', '')}`;
+    }
+
+    const card = document.createElement('div');
+    card.className = 'tension-card';
+    card.innerHTML = `
+      <div class="tension-header">
+        <span class="tension-pole left">${leftLabel}</span>
+        <span class="tension-vs">vs</span>
+        <span class="tension-pole right">${rightLabel}</span>
+      </div>
+      <div class="tension-desc">${t.desc}</div>
+      <input type="range" class="tension-slider" min="0" max="100" value="50"
+        data-index="${i}" oninput="updateTensionValue(this)">
+      <div class="tension-value" id="tension-val-${i}">Balanced</div>
+    `;
+    container.appendChild(card);
+  });
+
+  goTo('screen-m3-calibrate');
+}
+
+function updateTensionValue(slider) {
+  const i = slider.dataset.index;
+  const val = parseInt(slider.value);
+  state.m3.tensions[i] = val;
+
+  const label = document.getElementById(`tension-val-${i}`);
+  if (val < 30) label.textContent = 'Strongly left';
+  else if (val < 45) label.textContent = 'Leaning left';
+  else if (val <= 55) label.textContent = 'Balanced';
+  else if (val <= 70) label.textContent = 'Leaning right';
+  else label.textContent = 'Strongly right';
+}
+
+// ═══════════════════════════════════════════════
+// RESULTS (Module 3 Phase 3)
+// ═══════════════════════════════════════════════
+
+function generateResults() {
+  const [a1key, a2key] = state.m3.topTwo;
+  const a1 = ARCHETYPES[a1key];
+  const a2 = ARCHETYPES[a2key];
+
+  // Calculate ratio from tensions
+  let a1Weight = 0;
+  let totalWeight = 0;
+
+  TENSIONS.forEach((t, i) => {
+    const a1val = t.mapping[a1key];
+    const a2val = t.mapping[a2key];
+    if (Math.abs(a1val - a2val) < 15) return;
+
+    const userVal = state.m3.tensions[i];
+    // How close is user to each archetype's natural position
+    const distToA1 = Math.abs(userVal - a1val);
+    const distToA2 = Math.abs(userVal - a2val);
+    const total = distToA1 + distToA2;
+    if (total > 0) {
+      a1Weight += (1 - distToA1 / total);
+      totalWeight += 1;
+    }
+  });
+
+  // Also factor in quiz scores
+  const quizTotal = state.m3.scores[a1key] + state.m3.scores[a2key];
+  const quizA1Ratio = quizTotal > 0 ? state.m3.scores[a1key] / quizTotal : 0.5;
+
+  // Blend quiz ratio (40%) and tension ratio (60%)
+  const tensionA1Ratio = totalWeight > 0 ? a1Weight / totalWeight : 0.5;
+  const finalA1 = Math.round((quizA1Ratio * 0.4 + tensionA1Ratio * 0.6) * 100);
+  const finalA2 = 100 - finalA1;
+
+  // Determine primary (higher %)
+  let primary, secondary, primaryPct, secondaryPct, primaryKey, secondaryKey;
+  if (finalA1 >= finalA2) {
+    primary = a1; secondary = a2; primaryPct = finalA1; secondaryPct = finalA2;
+    primaryKey = a1key; secondaryKey = a2key;
+  } else {
+    primary = a2; secondary = a1; primaryPct = finalA2; secondaryPct = finalA1;
+    primaryKey = a2key; secondaryKey = a1key;
+  }
+
+  // Generate emergent properties
+  const properties = generateProperties(primaryKey, secondaryKey, primaryPct);
+
+  // Generate synthesis name
+  const synthesisName = generateSynthesisName(primaryKey, secondaryKey);
+
+  const el = document.getElementById('results-content');
+  el.innerHTML = `
+    <div class="reveal-container result-hero">
+      <div class="label">Your Brand Archetype</div>
+      <div class="gap-md"></div>
+      <div class="result-ratio">
+        <div class="result-archetype">
+          <div class="result-archetype-name">${primary.name}</div>
+          <div class="result-archetype-pct">${primaryPct}%</div>
+        </div>
+        <div class="result-divider"></div>
+        <div class="result-archetype">
+          <div class="result-archetype-name">${secondary.name}</div>
+          <div class="result-archetype-pct">${secondaryPct}%</div>
+        </div>
+      </div>
+      <div class="result-bar">
+        <div class="result-bar-fill primary" style="width: ${primaryPct}%"></div>
+        <div class="result-bar-fill secondary" style="width: ${secondaryPct}%"></div>
+      </div>
+    </div>
+
+    <div class="reveal-container reveal-stagger-1">
+      <div class="synthesis-block">
+        <div class="label">Your Named Synthesis</div>
+        <div class="gap-sm"></div>
+        <div class="synthesis-name">${synthesisName}</div>
+        <div class="synthesis-subtitle">${primary.name.replace('The ', '')} ${primaryPct}% + ${secondary.name.replace('The ', '')} ${secondaryPct}%</div>
+      </div>
+    </div>
+
+    <div class="reveal-container reveal-stagger-2">
+      <div class="label" style="margin-bottom:1rem">Your Two Archetypes</div>
+      <div class="archetype-detail">
+        <h3>${primary.name} <span style="color:var(--accent);font-weight:300">(Primary)</span></h3>
+        <div class="motto">"${primary.motto}"</div>
+        <div class="trait-row"><span class="trait-label">Core Desire</span><span class="trait-value">${primary.desire}</span></div>
+        <div class="trait-row"><span class="trait-label">Goal</span><span class="trait-value">${primary.goal}</span></div>
+        <div class="trait-row"><span class="trait-label">Fear</span><span class="trait-value">${primary.fear}</span></div>
+        <div class="trait-row"><span class="trait-label">Gift</span><span class="trait-value">${primary.gift}</span></div>
+        <div class="trait-row"><span class="trait-label">Shadow</span><span class="trait-value">${primary.shadow}</span></div>
+        <div class="trait-row"><span class="trait-label">Brand Examples</span><span class="trait-value">${primary.brands}</span></div>
+      </div>
+      <div class="archetype-detail" style="margin-top:16px">
+        <h3>${secondary.name} <span style="color:var(--accent-dim);font-weight:300">(Secondary)</span></h3>
+        <div class="motto">"${secondary.motto}"</div>
+        <div class="trait-row"><span class="trait-label">Core Desire</span><span class="trait-value">${secondary.desire}</span></div>
+        <div class="trait-row"><span class="trait-label">Goal</span><span class="trait-value">${secondary.goal}</span></div>
+        <div class="trait-row"><span class="trait-label">Fear</span><span class="trait-value">${secondary.fear}</span></div>
+        <div class="trait-row"><span class="trait-label">Gift</span><span class="trait-value">${secondary.gift}</span></div>
+        <div class="trait-row"><span class="trait-label">Shadow</span><span class="trait-value">${secondary.shadow}</span></div>
+        <div class="trait-row"><span class="trait-label">Brand Examples</span><span class="trait-value">${secondary.brands}</span></div>
+      </div>
+    </div>
+
+    <div class="reveal-container reveal-stagger-3">
+      <div class="gap-lg"></div>
+      <div class="label" style="margin-bottom:1rem">Emergent Properties of Your Blend</div>
+      <p class="body" style="margin-bottom:1rem">These properties emerge from the combination — neither archetype creates them alone.</p>
+      <div class="property-grid">
+        ${properties.map(p => `
+          <div class="property-card">
+            <h4>${p.name}</h4>
+            <p>${p.desc}</p>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="reveal-container reveal-stagger-4">
+      <div class="decision-filter">
+        <h3>Your Brand Decision Filter</h3>
+        <p class="body" style="margin-bottom:1rem">Before any brand decision, ask yourself:</p>
+        <div class="filter-question">1. Does this serve my ${primary.name.replace('The ', '')} side — ${primary.desire.toLowerCase()}?</div>
+        <div class="filter-question">2. Does this honor my ${secondary.name.replace('The ', '')} side — ${secondary.desire.toLowerCase()}?</div>
+        <div class="filter-question">3. Does the balance feel like ${primaryPct}/${secondaryPct}, not tilted too far either way?</div>
+        <div class="filter-question">4. Would ${synthesisName} do this?</div>
+        <div class="filter-question">5. Does this create something neither archetype could alone?</div>
+      </div>
+    </div>
+  `;
+
+  // Animate the result bar after render
+  goTo('screen-m3-results');
+  setTimeout(() => {
+    document.querySelectorAll('.result-bar-fill').forEach(el => {
+      el.style.width = el.style.width; // trigger reflow
+    });
+  }, 100);
+}
+
+function generateProperties(primary, secondary, ratio) {
+  // Generate context-specific emergent properties based on the archetype pair
+  const combos = {
+    // Each key is "primary-secondary", value is array of emergent properties
+    default: [
+      { name: "Integrated Authority", desc: "Your primary archetype leads, but your secondary adds depth that pure versions lack." },
+      { name: "Tension as Strength", desc: "The creative tension between your two archetypes produces a unique brand energy." },
+      { name: "Natural Complexity", desc: "You can serve audiences that single-archetype brands can't reach." },
+      { name: "Dynamic Range", desc: "You can shift between modes depending on context without losing authenticity." },
+      { name: "Shadow Awareness", desc: "Each archetype tempers the other's shadow — your blind spots are smaller." },
+      { name: "Distinctive Voice", desc: "The blend creates a voice that feels familiar but impossible to copy." }
+    ]
+  };
+
+  // Build specific combos for common pairs
+  const key = `${primary}-${secondary}`;
+  const reverseKey = `${secondary}-${primary}`;
+
+  const specificCombos = {
+    'lover-innocent': [
+      { name: "Sacred Sensuality", desc: "Beauty experienced as something holy — desire and purity coexisting without contradiction." },
+      { name: "Worthy Devotion", desc: "Making people feel they deserve beauty, not that they must earn it." },
+      { name: "Patient Desire", desc: "Longing that's willing to wait — courtship over conquest." },
+      { name: "Intimate Homecoming", desc: "Every interaction feels like returning to somewhere you belong." },
+      { name: "Embodied Spirit", desc: "The physical and the transcendent meeting in texture, sensation, and material presence." },
+      { name: "Present Restoration", desc: "What was beautiful isn't lost — it's being preserved, right now, for you." }
+    ],
+    'sage-creator': [
+      { name: "Informed Vision", desc: "Deep understanding fuels creative output — you don't just make, you make with insight." },
+      { name: "Beautiful Complexity", desc: "Complex ideas made elegant through creative expression." },
+      { name: "Knowledge as Art", desc: "Information presented with such craft that learning becomes an aesthetic experience." },
+      { name: "Purposeful Innovation", desc: "Every creation serves understanding — beauty with a brain." },
+      { name: "Legacy Through Work", desc: "What you create carries wisdom forward beyond your lifetime." },
+      { name: "Selective Excellence", desc: "High standards informed by deep knowledge of what actually matters." }
+    ],
+    'hero-outlaw': [
+      { name: "Principled Rebellion", desc: "You break rules FOR something, not just against something." },
+      { name: "Courageous Disruption", desc: "The strength to overturn systems and the skill to build better ones." },
+      { name: "Earned Audacity", desc: "Your boldness comes from competence — you've earned the right to challenge." },
+      { name: "Protective Revolution", desc: "You fight for the people who can't fight the system themselves." },
+      { name: "Disciplined Chaos", desc: "Structure in your approach, wildness in your vision." },
+      { name: "The Worthy Opponent", desc: "People respect you even when you threaten their comfort zone." }
+    ],
+    'creator-lover': [
+      { name: "Aesthetic Devotion", desc: "Beauty isn't a preference — it's a practice of love and attention." },
+      { name: "Sensory Craft", desc: "Everything you create can be felt, not just seen or understood." },
+      { name: "Intimate Artistry", desc: "Your work feels personal — like it was made for the person experiencing it." },
+      { name: "Passionate Precision", desc: "Technical excellence fueled by emotional depth." },
+      { name: "Living Beauty", desc: "What you create isn't static — it breathes, connects, and evolves." },
+      { name: "The Curator's Eye", desc: "You see beauty in what others overlook and make it impossible to ignore." }
+    ],
+    'magician-sage': [
+      { name: "Transformative Wisdom", desc: "Knowledge that doesn't just inform — it changes people fundamentally." },
+      { name: "Visionary Understanding", desc: "You see where things are going before the evidence is complete." },
+      { name: "Alchemical Insight", desc: "You combine ideas from different domains to produce something new." },
+      { name: "Catalytic Knowledge", desc: "What you share doesn't just add to understanding — it restructures it." },
+      { name: "The Pattern Behind the Pattern", desc: "You see the deeper system operating beneath surface phenomena." },
+      { name: "Elegant Solutions", desc: "Complex problems dissolving rather than being solved — because you found the real issue." }
+    ],
+    'explorer-outlaw': [
+      { name: "Authentic Rebellion", desc: "You reject convention not for shock but because you've found something truer." },
+      { name: "Frontier Justice", desc: "Where established systems fail, you create new ones that actually work." },
+      { name: "Freedom as Practice", desc: "Liberty isn't a concept — it's how you move through the world daily." },
+      { name: "The Beautiful Risk", desc: "Taking chances others won't because you've seen what's on the other side." },
+      { name: "Untamed Authenticity", desc: "Your brand can't be captured or contained — and that's the point." },
+      { name: "Map Maker", desc: "You don't follow paths — you create them for others to follow." }
+    ],
+    'ruler-caregiver': [
+      { name: "Benevolent Authority", desc: "Power used in service of others — leadership as an act of care." },
+      { name: "Structured Support", desc: "You build systems that help people, not just organize them." },
+      { name: "Protective Leadership", desc: "You take charge specifically so others feel safe enough to grow." },
+      { name: "Generous Governance", desc: "Your standards are high because you believe people deserve the best." },
+      { name: "The Steady Hand", desc: "In crisis, you're the person everyone turns to — competent AND compassionate." },
+      { name: "Legacy of Service", desc: "What you build outlasts you because it was built for others from the start." }
+    ]
+  };
+
+  return specificCombos[key] || specificCombos[reverseKey] || combos.default;
+}
+
+function generateSynthesisName(primary, secondary) {
+  const names = {
+    'lover-innocent': 'The Gardener',
+    'innocent-lover': 'The Gardener',
+    'sage-creator': 'The Architect',
+    'creator-sage': 'The Architect',
+    'hero-outlaw': 'The Renegade',
+    'outlaw-hero': 'The Renegade',
+    'magician-sage': 'The Alchemist',
+    'sage-magician': 'The Alchemist',
+    'creator-lover': 'The Artisan',
+    'lover-creator': 'The Artisan',
+    'explorer-outlaw': 'The Trailblazer',
+    'outlaw-explorer': 'The Trailblazer',
+    'ruler-caregiver': 'The Steward',
+    'caregiver-ruler': 'The Steward',
+    'hero-sage': 'The Strategist',
+    'sage-hero': 'The Strategist',
+    'explorer-sage': 'The Seeker',
+    'sage-explorer': 'The Seeker',
+    'creator-outlaw': 'The Maverick',
+    'outlaw-creator': 'The Maverick',
+    'jester-explorer': 'The Adventurer',
+    'explorer-jester': 'The Adventurer',
+    'caregiver-innocent': 'The Guardian',
+    'innocent-caregiver': 'The Guardian',
+    'hero-creator': 'The Forgemaster',
+    'creator-hero': 'The Forgemaster',
+    'magician-creator': 'The Visionary',
+    'creator-magician': 'The Visionary',
+    'lover-magician': 'The Enchanter',
+    'magician-lover': 'The Enchanter',
+    'ruler-hero': 'The Commander',
+    'hero-ruler': 'The Commander',
+    'jester-lover': 'The Muse',
+    'lover-jester': 'The Muse',
+    'everyman-caregiver': 'The Neighbor',
+    'caregiver-everyman': 'The Neighbor',
+    'outlaw-magician': 'The Catalyst',
+    'magician-outlaw': 'The Catalyst',
+    'innocent-explorer': 'The Pilgrim',
+    'explorer-innocent': 'The Pilgrim',
+    'ruler-sage': 'The Chancellor',
+    'sage-ruler': 'The Chancellor',
+    'jester-everyman': 'The Companion',
+    'everyman-jester': 'The Companion',
+    'hero-caregiver': 'The Protector',
+    'caregiver-hero': 'The Protector',
+    'lover-everyman': 'The Hearth Keeper',
+    'everyman-lover': 'The Hearth Keeper',
+    'outlaw-jester': 'The Trickster',
+    'jester-outlaw': 'The Trickster',
+    'magician-hero': 'The Paladin',
+    'hero-magician': 'The Paladin',
+    'ruler-outlaw': 'The Reformer',
+    'outlaw-ruler': 'The Reformer',
+    'creator-everyman': 'The Craftsperson',
+    'everyman-creator': 'The Craftsperson',
+    'explorer-creator': 'The Cartographer',
+    'creator-explorer': 'The Cartographer',
+    'innocent-sage': 'The Scholar',
+    'sage-innocent': 'The Scholar',
+    'explorer-lover': 'The Romantic',
+    'lover-explorer': 'The Romantic',
+    'explorer-hero': 'The Pathfinder',
+    'hero-explorer': 'The Pathfinder',
+    'magician-everyman': 'The Healer',
+    'everyman-magician': 'The Healer',
+    'innocent-jester': 'The Dreamer',
+    'jester-innocent': 'The Dreamer',
+    'ruler-creator': 'The Dynasty Builder',
+    'creator-ruler': 'The Dynasty Builder',
+    'caregiver-sage': 'The Mentor',
+    'sage-caregiver': 'The Mentor',
+    'lover-sage': 'The Philosopher',
+    'sage-lover': 'The Philosopher',
+    'caregiver-lover': 'The Devotee',
+    'lover-caregiver': 'The Devotee',
+    'ruler-magician': 'The Sovereign',
+    'magician-ruler': 'The Sovereign',
+    'jester-creator': 'The Improviser',
+    'creator-jester': 'The Improviser',
+    'ruler-explorer': 'The Conqueror',
+    'explorer-ruler': 'The Conqueror',
+    'jester-sage': 'The Wit',
+    'sage-jester': 'The Wit',
+    'innocent-ruler': 'The Good King',
+    'ruler-innocent': 'The Good King',
+    'innocent-hero': 'The Gallant',
+    'hero-innocent': 'The Gallant',
+    'jester-caregiver': 'The Joymaker',
+    'caregiver-jester': 'The Joymaker',
+    'jester-hero': 'The Daredevil',
+    'hero-jester': 'The Daredevil',
+    'jester-magician': 'The Illusionist',
+    'magician-jester': 'The Illusionist',
+    'jester-ruler': 'The Showman',
+    'ruler-jester': 'The Showman',
+    'outlaw-lover': 'The Outcast Prince',
+    'lover-outlaw': 'The Outcast Prince',
+    'outlaw-caregiver': 'The Robin Hood',
+    'caregiver-outlaw': 'The Robin Hood',
+    'outlaw-sage': 'The Heretic',
+    'sage-outlaw': 'The Heretic',
+    'outlaw-innocent': 'The Wild Child',
+    'innocent-outlaw': 'The Wild Child',
+    'outlaw-everyman': 'The People\'s Champion',
+    'everyman-outlaw': 'The People\'s Champion',
+    'everyman-hero': 'The Underdog',
+    'hero-everyman': 'The Underdog',
+    'everyman-sage': 'The Storyteller',
+    'sage-everyman': 'The Storyteller',
+    'everyman-explorer': 'The Wanderer',
+    'explorer-everyman': 'The Wanderer',
+    'everyman-ruler': 'The Mayor',
+    'ruler-everyman': 'The Mayor',
+    'everyman-innocent': 'The Good Neighbor',
+    'innocent-everyman': 'The Good Neighbor',
+    'innocent-creator': 'The Dreamer',
+    'creator-innocent': 'The Dreamer',
+    'innocent-magician': 'The Wonderworker',
+    'magician-innocent': 'The Wonderworker',
+    'caregiver-creator': 'The Nurturer',
+    'creator-caregiver': 'The Nurturer',
+    'caregiver-explorer': 'The Missionary',
+    'explorer-caregiver': 'The Missionary',
+    'caregiver-magician': 'The Shaman',
+    'magician-caregiver': 'The Shaman',
+    'lover-hero': 'The Champion',
+    'hero-lover': 'The Champion',
+    'lover-ruler': 'The Empress',
+    'ruler-lover': 'The Empress',
+    'explorer-magician': 'The Discoverer',
+    'magician-explorer': 'The Discoverer'
+  };
+
+  const key = `${primary}-${secondary}`;
+  return names[key] || `The ${capitalize(primary)}-${capitalize(secondary)}`;
+}
+
+function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+// ═══════════════════════════════════════════════
+// EXPORT
+// ═══════════════════════════════════════════════
+
+function exportResults() {
+  const [a1key, a2key] = state.m3.topTwo;
+  const a1 = ARCHETYPES[a1key];
+  const a2 = ARCHETYPES[a2key];
+
+  let text = `PERSONAL BRAND ARCHETYPE RESULTS\n${'='.repeat(40)}\n\n`;
+  text += `MODULE 1: FOUNDATION\n${'-'.repeat(30)}\n`;
+  text += `WHY: "I believe ${state.m1.why}"\n`;
+  text += `VALUES: ${state.m1.values.join(', ')}\n`;
+  text += `ANTI-VALUES: ${state.m1.antiValues.join(', ')}\n`;
+  text += `KEY MOMENT: ${state.m1.storyMoment}\n`;
+  text += `UNIQUE EDGE: ${state.m1.storyUnique}\n`;
+  text += `WOULD FIX: ${state.m1.storyFix}\n\n`;
+
+  text += `MODULE 2: AUDIENCE\n${'-'.repeat(30)}\n`;
+  text += `CUSTOMER: ${state.m2.customer}\n`;
+  text += `SURFACE PROBLEM: ${state.m2.problemSurface}\n`;
+  text += `DEEP PROBLEM: ${state.m2.problemDeep}\n`;
+  text += `BEFORE: ${state.m2.transformBefore}\n`;
+  text += `AFTER: ${state.m2.transformAfter}\n`;
+  text += `BRIDGE: ${state.m2.bridge}\n\n`;
+
+  text += `MODULE 3: ARCHETYPE\n${'-'.repeat(30)}\n`;
+  text += `PRIMARY: ${a1.name}\n`;
+  text += `SECONDARY: ${a2.name}\n`;
+  text += `SYNTHESIS: ${generateSynthesisName(a1key, a2key)}\n`;
+
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'brand-archetype-results.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ═══════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════
+
+function esc(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderChips('values-grid', VALUES, 'values', 5, 'values-count');
+  renderChips('antivalues-grid', ANTI_VALUES, 'antiValues', 3, 'antivalues-count');
+  updateProgress();
+});
+</script>
+</body>
+</html>
