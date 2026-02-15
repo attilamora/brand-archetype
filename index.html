@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Brand Archetype — Personal Brand Builder</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Manrope:wght@300;400;500;600;700&family=Azeret+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -1148,6 +1149,7 @@ h1, h2, h3, .display { font-family: 'Cormorant', serif; }
     <div style="text-align:center">
       <p class="body" style="margin-bottom:1rem">Modules 4–10 coming soon: Positioning, Brand Promise, Story, Voice, Visual Identity, Content Architecture, Brand System.</p>
       <button class="btn btn-secondary" onclick="exportResults()">Export Results</button>
+      <span id="save-badge" style="display:none; margin-left:1rem; color:var(--success); font-family:'Azeret Mono',monospace; font-size:0.8rem;">✓ saved</span>
     </div>
   </div>
 
@@ -1566,6 +1568,43 @@ const state = {
 
 // Init scores
 Object.keys(ARCHETYPES).forEach(k => state.m3.scores[k] = 0);
+
+// ═══════════════════════════════════════════════
+// SUPABASE
+// ═══════════════════════════════════════════════
+
+const SUPABASE_URL = 'https://ftxvqzwsoiuxptbtnzmf.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_v3kbZDvdd57Nfv8XDVZ4uA_qhaf5VO_';
+const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+async function submitToSupabase(primaryKey, secondaryKey, synthesisName) {
+  if (!supabase) { console.warn('Supabase not loaded'); return; }
+  try {
+    const { error } = await supabase.from('quiz_submissions').insert({
+      why: state.m1.why,
+      values: state.m1.values,
+      anti_values: state.m1.antiValues,
+      story_moment: state.m1.storyMoment,
+      story_unique: state.m1.storyUnique,
+      story_fix: state.m1.storyFix,
+      customer: state.m2.customer,
+      problem_surface: state.m2.problemSurface,
+      problem_deep: state.m2.problemDeep,
+      transform_before: state.m2.transformBefore,
+      transform_after: state.m2.transformAfter,
+      bridge: state.m2.bridge,
+      primary_archetype: primaryKey,
+      secondary_archetype: secondaryKey,
+      synthesis_name: synthesisName,
+      archetype_scores: state.m3.scores,
+      tension_values: state.m3.tensions,
+      quiz_answers: state.m3.answers
+    });
+    if (error) { console.error('Supabase insert error:', error); return; }
+    const badge = document.getElementById('save-badge');
+    if (badge) badge.style.display = 'inline';
+  } catch (e) { console.error('Supabase submit failed:', e); }
+}
 
 // ═══════════════════════════════════════════════
 // NAVIGATION
@@ -2119,6 +2158,9 @@ function generateResults() {
       el.style.width = el.style.width; // trigger reflow
     });
   }, 100);
+
+  // Save to Supabase
+  submitToSupabase(primaryKey, secondaryKey, synthesisName);
 }
 
 function generateProperties(primary, secondary, ratio) {
