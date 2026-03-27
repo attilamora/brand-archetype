@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Savant Mode — Give Any AI a Mind That Thinks in Seven Dimensions</title>
+<title>Savant Mode — Your AI Is Half Blind. This Fixes It.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet">
@@ -11,16 +11,16 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
 :root{
-  --gold:rgba(201,161,98,1);
-  --gold-bright:rgba(238,218,175,.96);
-  --gold-mid:rgba(201,161,98,.86);
-  --gold-dim:rgba(201,161,98,.55);
-  --gold-faint:rgba(201,161,98,.22);
-  --gold-glow:rgba(201,161,98,.10);
-  --text:rgba(245,235,215,.97);
-  --text-mid:rgba(215,195,165,.88);
-  --text-dim:rgba(175,158,128,.72);
-  --text-faint:rgba(155,138,108,.50);
+  --gold:rgba(168,132,72,1);
+  --gold-bright:rgba(148,115,58,1);
+  --gold-mid:rgba(168,132,72,.7);
+  --gold-dim:rgba(168,132,72,.45);
+  --gold-faint:rgba(168,132,72,.15);
+  --gold-glow:rgba(168,132,72,.08);
+  --text:rgba(18,12,4,.9);
+  --text-mid:rgba(42,30,12,.55);
+  --text-dim:rgba(72,58,36,.35);
+  --text-faint:rgba(92,78,56,.2);
   --surface:rgba(20,14,5,.72);
   --surface-hi:rgba(30,21,8,.85);
   --border:rgba(201,161,98,.18);
@@ -30,18 +30,18 @@
 }
 
 html{scroll-behavior:smooth}
-body{background:#010100;color:var(--text);font-family:var(--serif);overflow-x:hidden;min-height:100vh}
+body{background:#faf8f4;color:var(--text);font-family:var(--serif);overflow-x:hidden;min-height:100vh}
 
 /* BACKGROUND */
 body::before{content:'';position:fixed;inset:0;z-index:-2;
-  background:radial-gradient(ellipse at 50% 38%,#1a1208 0%,#0c0904 40%,#010100 100%)}
+  background:radial-gradient(ellipse at 50% 30%,rgba(168,132,72,.03) 0%,transparent 60%)}
 body::after{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(ellipse at 50% 40%,transparent 10%,rgba(0,0,0,.22) 44%,rgba(0,0,0,.80) 100%)}
+  background:none}
 
 /* AMBIENT SHAFT */
 #ambient-shaft{position:fixed;top:0;left:50%;transform:translateX(-50%);
   width:360px;height:100%;z-index:-1;pointer-events:none;
-  background:linear-gradient(180deg,rgba(205,170,115,.08) 0%,rgba(185,145,82,.034) 32%,rgba(145,108,45,.010) 62%,transparent 100%);
+  background:none;
   animation:shaftBreathe 11s ease-in-out infinite}
 @keyframes shaftBreathe{0%,100%{opacity:.45}50%{opacity:1}}
 
