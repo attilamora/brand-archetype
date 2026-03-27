@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>What a Dyslexic Brain Taught AI to See — Savant Mode</title>
+<title>Why I Made AI Think Like a Dyslexic Brain — Savant Mode</title>
 <meta name="description" content="A cognitive specification built from dyslexic neuroscience that gives any AI cross-domain pattern recognition, spatial reasoning, and polyphonic perception. Open source.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -103,6 +103,17 @@ p em{color:var(--gold)}
   font-size:13px;font-style:italic;z-index:2;color:rgba(250,248,243,.1)}
 @media(max-width:700px){.neural-wrap{flex-direction:column}.neural-wrap .panel{height:360px}}
 
+/* CROSS-DOMAIN VISUALISATION — full height, immersive */
+.crossdomain-section{padding:80px 24px 60px;display:flex;flex-direction:column;align-items:center;
+  background:var(--dark-surface);min-height:100vh;justify-content:center;position:relative;overflow:hidden}
+.crossdomain-section .label{color:rgba(168,132,74,.4)}
+.crossdomain-section h2{text-align:center;margin-bottom:8px;color:rgba(250,248,243,.88)}
+.crossdomain-section .sub{font-size:16px;font-style:italic;color:rgba(250,248,243,.2);margin-bottom:40px;text-align:center}
+#cross-c{max-width:1200px;width:100%;height:80vh;min-height:600px;max-height:800px;cursor:pointer}
+.cd-detail{max-width:560px;width:100%;text-align:center;margin-top:28px;padding:0 24px;min-height:60px}
+.cd-detail .cd-n{font-size:22px;font-weight:300;font-style:italic;color:rgba(168,132,74,.8);margin-bottom:6px}
+.cd-detail .cd-d{font-size:15px;font-weight:300;font-style:italic;color:rgba(250,248,243,.35);line-height:1.6}
+
 /* CONSTELLATION — large, visible, interactive */
 .const-section{padding:100px 48px 60px;display:flex;flex-direction:column;align-items:center}
 .const-section h2{text-align:center;margin-bottom:8px}
@@ -169,8 +180,8 @@ footer{padding:36px 52px;display:flex;justify-content:space-between;align-items:
 <section class="hero" id="hero">
   <canvas id="hero-canvas"></canvas>
   <span class="hero-ey">Open Source Cognitive Architecture</span>
-  <h1>What a dyslexic brain<br>taught AI to see</h1>
-  <p class="hero-sub">A cognitive specification that gives any AI cross-domain pattern recognition, polyphonic perception, and spatial reasoning. One document. No code.</p>
+  <h1>Why I made AI think<br>like a dyslexic brain</h1>
+  <p class="hero-sub">The neuroscience says dyslexic brains see patterns sequential minds can't. So I wrote it down and gave it to a machine.</p>
   <div class="vline"></div>
   <div class="hero-cta"><a href="https://github.com/attilamora/savant-mode" class="btn btn-dark">Get the Spec</a></div>
 </section>
@@ -205,6 +216,19 @@ footer{padding:36px 52px;display:flex;justify-content:space-between;align-items:
 </div>
 
 <div class="pull-wrap"><div class="pull-quote r">The deficit: transcription of symbols — 5,500 years old.<br>The surplus: pattern recognition, spatial reasoning, systems thinking — millions of years old.<br><em>We measured the ocean by the puddle on the pier.</em></div></div>
+
+<!-- CROSS-DOMAIN VISUALISATION — the wow moment -->
+<div class="fw crossdomain-section">
+  <span class="label r">How It Thinks</span>
+  <h2 class="r">Cross-domain pattern recognition</h2>
+  <div class="sub r">Hover any domain. Watch the connections fire.</div>
+  <canvas id="cross-c"></canvas>
+  <div class="cd-detail" id="cd-detail">
+    <div class="cd-n" id="cd-n">Hover a domain</div>
+    <div class="cd-d" id="cd-d">A dyslexic mind doesn't think in categories. It thinks in connections. Every domain is a node. Every connection is a pattern the sequential mind filters out.</div>
+  </div>
+</div>
+
 <div class="h-rule"></div>
 
 <div class="section r">
@@ -405,6 +429,149 @@ nSim('seq-c','s');nSim('dys-c','d');
   c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect(),cx=e.clientX-r.left,cy=e.clientY-r.top;hov=-1;
     for(let i=0;i<cp.length;i++){if(Math.sqrt((cp[i].x-cx)**2+(cp[i].y-cy)**2)<30){hov=i;break}}c.style.cursor=hov>=0?'pointer':'default';draw()});
   window.addEventListener('resize',()=>{rs();draw()});rs();draw();upd()
+})();
+
+// CROSS-DOMAIN — the immersive visualisation
+(function(){
+  const c=document.getElementById('cross-c'),x=c.getContext('2d');
+  let w,h,hov=-1,nodes=[],t=0;
+  const g=[168,132,74];
+  const domains=[
+    {name:'MUSIC',desc:'Rhythm, counterpoint, harmony as structural logic. Bach\'s fugues as a model for parallel processing.',x:0,y:0},
+    {name:'ECONOMICS',desc:'Market gaps as spatial perception. The ability to see where systems are misaligned before data confirms it.',x:0,y:0},
+    {name:'PHILOSOPHY',desc:'Frameworks for frameworks. The architecture underneath the architecture. Wittgenstein\'s aspect-change.',x:0,y:0},
+    {name:'NEUROSCIENCE',desc:'The wiring itself. Long-range connections. Complementary cognition. The biology behind the perception.',x:0,y:0},
+    {name:'ARCHITECTURE',desc:'Space as thought. Buildings as arguments. Structure that you walk through instead of reading.',x:0,y:0},
+    {name:'BIOLOGY',desc:'Ecosystems, feedback loops, mycorrhizal networks. The original cross-domain pattern recognition system.',x:0,y:0},
+    {name:'PHYSICS',desc:'Superposition. Entanglement. The holding of multiple states until the moment of collapse.',x:0,y:0},
+    {name:'CHINESE MEDICINE',desc:'Meridians. Qi. Long-range channels connecting distant systems. The body as a network, not a machine.',x:0,y:0},
+    {name:'MATHEMATICS',desc:'Patterns underneath patterns. The substrate that every other domain is secretly written in.',x:0,y:0},
+    {name:'MYTHOLOGY',desc:'The blind seer. The wounded healer. Archetypes that encode the same truth across every culture.',x:0,y:0},
+    {name:'ART',desc:'Perception made visible. The translation of spatial, simultaneous understanding into something others can see.',x:0,y:0},
+    {name:'STRATEGY',desc:'Second and third-order effects. Where the intervention point sits. The cascade before it cascades.',x:0,y:0},
+  ];
+  // Pre-define which domains are connected (the cross-domain leaps)
+  const links=[
+    [0,1,'Rhythm in markets'],[0,2,'Logic of harmony'],[0,10,'Sound as space'],
+    [1,11,'Markets as systems'],[1,5,'Ecosystem economics'],
+    [2,3,'Mind examining mind'],[2,9,'Truth across cultures'],[2,6,'Aspect-change'],
+    [3,7,'Neural meridians'],[3,5,'Brain as ecosystem'],
+    [4,8,'Geometry of space'],[4,10,'Building as art'],
+    [5,7,'Living systems'],[5,8,'Biological mathematics'],
+    [6,2,'Superposition of meaning'],[6,8,'Quantum mathematics'],
+    [7,0,'Rhythm of energy'],[7,5,'Body as ecosystem'],
+    [8,0,'Music as mathematics'],[8,11,'Pattern prediction'],
+    [9,10,'Myth as art'],[9,2,'Archetypal philosophy'],
+    [10,11,'Vision as strategy'],[10,0,'Art as music'],
+    [11,3,'Strategic neuroscience'],[11,4,'Architecture of plans'],
+  ];
+
+  function rs(){
+    const r=c.parentElement.getBoundingClientRect();
+    w=c.width=Math.min(r.width,1200);h=c.height=Math.min(window.innerHeight*.8,800);
+    calc();
+  }
+  function calc(){
+    // Place domains in a wide ellipse
+    const cx=w/2,cy=h/2;
+    const rx=w*.42,ry=h*.38;
+    for(let i=0;i<domains.length;i++){
+      const a=-Math.PI/2+i*(Math.PI*2/domains.length);
+      domains[i].x=cx+Math.cos(a)*rx;
+      domains[i].y=cy+Math.sin(a)*ry;
+    }
+  }
+
+  function draw(){
+    t+=.003;
+    x.clearRect(0,0,w,h);
+
+    // Background pulse connections (always animating, subtle)
+    for(let k=0;k<links.length;k++){
+      const[i,j]=links[k];
+      const pulse=Math.sin(t*2+k*.7)*.5+.5;
+      const alpha=hov===-1?pulse*.04+.02:(hov===i||hov===j)?pulse*.15+.25:.015;
+      const lw=hov===-1?.4:(hov===i||hov===j)?pulse*1.5+1:.2;
+      x.beginPath();x.moveTo(domains[i].x,domains[i].y);x.lineTo(domains[j].x,domains[j].y);
+      x.strokeStyle=`rgba(${g[0]},${g[1]},${g[2]},${alpha})`;x.lineWidth=lw;x.stroke();
+
+      // Animated particles on active connections
+      if((hov===i||hov===j)&&hov>=0){
+        const prog=(t*3+k*.3)%1;
+        const px=domains[i].x+(domains[j].x-domains[i].x)*prog;
+        const py=domains[i].y+(domains[j].y-domains[i].y)*prog;
+        x.beginPath();x.arc(px,py,2.5,0,Math.PI*2);
+        x.fillStyle=`rgba(${g[0]},${g[1]},${g[2]},${pulse*.5+.2})`;x.fill();
+      }
+    }
+
+    // Domain nodes
+    for(let i=0;i<domains.length;i++){
+      const d=domains[i],isH=i===hov;
+      const pulse=Math.sin(t*1.5+i*.9)*.5+.5;
+
+      // Connected glow
+      if(isH){
+        x.beginPath();x.arc(d.x,d.y,44,0,Math.PI*2);
+        x.fillStyle=`rgba(${g[0]},${g[1]},${g[2]},.08)`;x.fill();
+        x.beginPath();x.arc(d.x,d.y,30,0,Math.PI*2);
+        x.fillStyle=`rgba(${g[0]},${g[1]},${g[2]},.1)`;x.fill();
+      }
+
+      // Check if this node is connected to hovered
+      let isLinked=false;
+      if(hov>=0&&hov!==i){for(const[a,b] of links){if((a===hov&&b===i)||(b===hov&&a===i)){isLinked=true;break}}}
+
+      // Node
+      const nr=isH?18:isLinked?14:10;
+      const na=isH?1:isLinked?.7:.25+pulse*.08;
+      x.beginPath();x.arc(d.x,d.y,nr,0,Math.PI*2);
+      x.fillStyle=`rgba(${g[0]},${g[1]},${g[2]},${na})`;x.fill();
+
+      // Ring
+      if(!isH){x.beginPath();x.arc(d.x,d.y,nr,0,Math.PI*2);
+        x.strokeStyle=`rgba(${g[0]},${g[1]},${g[2]},${isLinked?.3:.12})`;x.lineWidth=1;x.stroke()}
+
+      // Label — always visible
+      const above=d.y<h/2;
+      x.font=`${isH?'400':'300'} ${isH?13:10}px "Helvetica Neue",Arial,sans-serif`;
+      x.textAlign='center';
+      x.fillStyle=isH?`rgba(250,248,243,.9)`:isLinked?`rgba(250,248,243,.55)`:`rgba(250,248,243,.2)`;
+      x.fillText(d.name,d.x,above?d.y-nr-10:d.y+nr+16);
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  function upd(){
+    if(hov>=0){
+      document.getElementById('cd-n').textContent=domains[hov].name;
+      document.getElementById('cd-d').textContent=domains[hov].desc;
+    } else {
+      document.getElementById('cd-n').textContent='Hover a domain';
+      document.getElementById('cd-d').textContent='A dyslexic mind doesn\'t think in categories. It thinks in connections. Every domain is a node. Every connection is a pattern the sequential mind filters out.';
+    }
+  }
+
+  c.addEventListener('mousemove',e=>{
+    const r=c.getBoundingClientRect(),cx=e.clientX-r.left,cy=e.clientY-r.top;
+    hov=-1;
+    for(let i=0;i<domains.length;i++){
+      if(Math.sqrt((domains[i].x-cx)**2+(domains[i].y-cy)**2)<35){hov=i;break}
+    }
+    c.style.cursor=hov>=0?'pointer':'default';
+    upd();
+  });
+  c.addEventListener('mouseleave',()=>{hov=-1;upd()});
+  c.addEventListener('click',e=>{
+    const r=c.getBoundingClientRect(),cx=e.clientX-r.left,cy=e.clientY-r.top;
+    for(let i=0;i<domains.length;i++){
+      if(Math.sqrt((domains[i].x-cx)**2+(domains[i].y-cy)**2)<35){hov=i;upd();break}
+    }
+  });
+
+  window.addEventListener('resize',()=>{rs()});
+  rs();draw();
 })();
 </script>
 </body>
