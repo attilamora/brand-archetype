@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab — Living Mirrors</title>
+<meta name="description" content="Cognition research, perception technology, and open-source infrastructure. The Living Mirrors Lab builds the operating system for sovereign humans running AI at scale.">
+<meta property="og:title" content="Lab — Living Mirrors">
+<meta property="og:description" content="Six open questions. How cognition shapes itself. How language rewires thought. How context becomes infrastructure.">
+<meta property="og:image" content="https://livingmirrors.ai/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://livingmirrors.ai/lab/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lab — Living Mirrors">
+<meta name="twitter:description" content="Cognitive architecture, context infrastructure, language as technology. The research arm of a living system.">
+<meta name="twitter:image" content="https://livingmirrors.ai/og-image.png">
+<meta name="theme-color" content="#0a2540">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="canonical" href="https://livingmirrors.ai/lab/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/theme.css">
+<style>
+:root{--walnut:#ff6e00;--walnut-dim:rgba(255,110,0,.3);--walnut-faint:rgba(255,110,0,.08);--walnut-serif:"Fraunces","Cormorant Garamond",Georgia,serif;--magyar:#8B2F26;--magyar-bright:#B5413A}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 50% 25%,rgba(201,161,98,.025) 0%,transparent 55%)}
+
+@media(hover:hover){.hero{cursor:none}}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:140px 48px 80px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 40%,#0e2d50 0%,#0a2540 40%,#061a30 100%)}
+.hero canvas{position:absolute;inset:0;z-index:0}
+.hero-glow{position:absolute;top:45%;left:50%;transform:translate(-50%,-50%);width:1200px;height:1200px;background:radial-gradient(ellipse at center,rgba(201,161,98,.07) 0%,rgba(180,140,80,.03) 25%,transparent 50%);animation:heroGlow 8s ease-in-out infinite;pointer-events:none;z-index:1}
+@keyframes heroGlow{0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}}
+.hero-shaft{position:absolute;top:0;left:50%;transform:translateX(-50%);width:1px;height:35%;background:linear-gradient(to bottom,transparent,rgba(201,161,98,.18),transparent);pointer-events:none;z-index:1}
+.hero-ey{font-family:var(--sans);font-size:23px;font-weight:300;letter-spacing:.6em;text-transform:uppercase;color:rgba(201,161,98,.5);margin-bottom:44px;position:relative;z-index:2;opacity:0;animation:rise .8s ease forwards .2s}
+.hero h1{font-size:clamp(38px,7vw,76px);font-weight:300;font-style:italic;line-height:1.08;letter-spacing:-.01em;color:rgba(245,235,215,.92);max-width:860px;position:relative;z-index:2;opacity:0;animation:rise .8s ease forwards .35s}
+.hero-sub{font-size:clamp(17px,2vw,23px);font-weight:300;font-style:italic;color:rgba(220,200,170,.4);margin-top:28px;max-width:560px;line-height:1.65;position:relative;z-index:2;opacity:0;animation:rise .8s ease forwards .5s}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+.cursor-ring{position:fixed;pointer-events:none;z-index:200;width:28px;height:28px;border-radius:50%;border:1px solid rgba(201,161,98,.3);transform:translate(-50%,-50%);display:none}
+.cursor-dot{position:absolute;top:50%;left:50%;width:3px;height:3px;border-radius:50%;background:rgba(201,161,98,.6);transform:translate(-50%,-50%)}
+
+.hero-word{position:absolute;z-index:1;cursor:pointer;text-decoration:none;font-weight:300;font-style:italic;color:rgba(201,161,98,.12);transition:color .6s,text-shadow .6s;pointer-events:auto;white-space:nowrap;letter-spacing:.02em;opacity:0}
+.hero-word:hover{color:rgba(201,161,98,.4);text-shadow:0 0 60px rgba(201,161,98,.15)}
+.hero-word.hw-lg{font-size:clamp(36px,5.5vw,64px);color:rgba(201,161,98,.16)}
+.hero-word.hw-lg:hover{color:rgba(201,161,98,.5)}
+.hero-word.hw-md{font-size:clamp(26px,3.8vw,46px);color:rgba(201,161,98,.12)}
+.hero-word.hw-md:hover{color:rgba(201,161,98,.35)}
+.hero-word.hw-sm{font-size:clamp(20px,2.8vw,34px);color:rgba(201,161,98,.09)}
+.hero-word.hw-sm:hover{color:rgba(201,161,98,.25)}
+
+.section{max-width:660px;margin:0 auto;padding:88px 48px}
+.label{display:block;font-family:var(--sans);font-size:23px;font-weight:300;letter-spacing:.6em;text-transform:uppercase;color:var(--gold);margin-bottom:28px}
+.goal-num{font-family:var(--sans);font-size:64px;font-weight:200;color:rgba(201,161,98,.08);line-height:1;margin-bottom:16px}
+h2{font-size:clamp(28px,4.5vw,42px);font-weight:300;font-style:italic;line-height:1.18;color:var(--text);margin-bottom:28px}
+p{font-size:23px;font-weight:300;font-style:italic;line-height:1.78;color:var(--text-mid);margin-bottom:20px}
+p:last-of-type{margin-bottom:0}p strong{font-weight:500;color:var(--text)}p em{color:var(--gold)}
+.h-rule{max-width:660px;margin:0 auto;height:1px;background:linear-gradient(to right,transparent,rgba(201,161,98,.18),transparent)}
+.fw{width:100vw;position:relative;left:50%;transform:translateX(-50%)}
+.pull-wrap{max-width:720px;margin:0 auto;padding:80px 48px;text-align:center;position:relative}
+.pull-wrap::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:300px;background:radial-gradient(ellipse,rgba(201,161,98,.06),transparent 70%);pointer-events:none}
+.pull-quote{font-size:clamp(31px,3.8vw,40px);font-weight:300;font-style:italic;line-height:1.35;color:var(--text);position:relative;z-index:1}
+
+.btn{display:inline-block;font-family:var(--sans);font-size:23px;font-weight:300;letter-spacing:.4em;text-transform:uppercase;text-decoration:none;padding:16px 48px;border-radius:40px;position:relative;overflow:hidden;transition:all .5s}
+.btn-light{color:var(--gold-rich);border:1px solid var(--gold-dim)}.btn-light:hover{border-color:var(--gold);background:rgba(201,161,98,.05)}
+.btn-dark{color:rgba(201,161,98,.5);border:1px solid rgba(201,161,98,.2)}.btn-dark:hover{border-color:rgba(201,161,98,.5);color:rgba(212,184,120,.9);background:rgba(201,161,98,.06)}
+.btn-walnut{color:var(--walnut);border:1px solid var(--walnut-dim);font-family:var(--walnut-serif);font-weight:400;letter-spacing:.2em}.btn-walnut:hover{border-color:rgba(255,110,0,.5);background:var(--walnut-faint)}
+
+.stat-wrap{padding:0;text-align:center;position:relative;overflow:hidden;background:linear-gradient(170deg,#0a2540 0%,#0e3158 20%,#123a65 40%,#0d2e52 60%,#071e3a 80%,#04121f 100%)}
+.stat-wrap::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 800 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.015 .008' numOctaves='5' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.06 0 0 0 0 0.18 0 0 0 0 0.35 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='800' height='400' filter='url(%23n)'/%3E%3C/svg%3E") center/cover;mix-blend-mode:soft-light;opacity:.6;pointer-events:none}
+.stat-wrap::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(201,161,98,.06) 0%,transparent 60%);pointer-events:none}
+.stat-heading{color:rgba(250,245,235,.85);margin:0;padding:72px 48px 32px;position:relative;z-index:1;text-align:center}
+.stat-band{display:flex;justify-content:center;gap:clamp(36px,10vw,120px);padding:0 48px 72px;position:relative;z-index:1}
+.stat{text-align:center}.stat .num{font-size:clamp(38px,7vw,60px);font-weight:300;font-style:italic;color:rgba(201,161,98,.9);line-height:1}
+.stat .lbl{font-family:var(--sans);font-size:23px;font-weight:300;letter-spacing:.3em;text-transform:uppercase;color:rgba(250,245,235,.4);margin-top:10px}
+
+.layer-detail{max-width:800px;margin:0 auto;padding:60px 48px 40px;display:grid;grid-template-columns:80px 1fr;gap:24px;border-bottom:1px solid rgba(201,161,98,.06)}
+.layer-detail:last-of-type{border-bottom:none}
+.ld-id{font-family:var(--sans);font-size:23px;font-weight:300;letter-spacing:.4em;text-transform:uppercase;color:rgba(201,161,98,.35);padding-top:4px}
+.ld-name{font-size:clamp(31px,3.8vw,40px);font-weight:300;font-style:italic;color:var(--text);margin-bottom:6px;line-height:1.2}
+.ld-desc{font-size:23px;font-weight:300;font-style:italic;color:var(--text-mid);line-height:1.7;margin-bottom:10px}
+.ld-status{display:inline-block;font-family:var(--sans);font-size:13px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;padding:4px 12px;border-radius:12px}
+.ld-status.built{color:rgba(107,158,74,.8);border:1px solid rgba(107,158,74,.2)}.ld-status.drafted{color:rgba(201,161,98,.6);border:1px solid rgba(201,161,98,.15)}
+.ld-status.designed{color:rgba(74,111,165,.6);border:1px solid rgba(74,111,165,.15)}.ld-status.arch{color:rgba(139,106,174,.6);border:1px solid rgba(139,106,174,.15)}
+@media(max-width:640px){.layer-detail{grid-template-columns:1fr;gap:8px;padding:40px 24px 32px}}
+
+.strip{width:100vw;position:relative;left:50%;transform:translateX(-50%);padding:120px 48px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.strip-inner{max-width:1060px;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.strip-walnut{background:#fffaf5;border-top:1px solid rgba(255,110,0,.06);border-bottom:1px solid rgba(255,110,0,.06)}
+.strip-walnut::before{content:'';position:absolute;top:50%;left:30%;transform:translate(-50%,-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(255,110,0,.03),transparent 70%);pointer-events:none}
+.strip-text{position:relative;z-index:1}
+.strip-walnut .strip-badge{font-family:var(--sans);font-size:13px;font-weight:300;letter-spacing:.5em;text-transform:uppercase;color:var(--walnut);margin-bottom:20px}
+.strip-walnut .strip-title{font-family:var(--walnut-serif);font-size:clamp(32px,5vw,52px);font-weight:300;font-style:italic;line-height:1.1;color:#1a1a1a;margin-bottom:8px}
+.strip-walnut .strip-tagline{font-family:var(--walnut-serif);font-size:23px;font-weight:300;color:rgba(255,110,0,.6);margin-bottom:24px;font-style:italic}
+.strip-walnut .strip-body{font-size:23px;font-weight:300;font-style:italic;line-height:1.78;color:rgba(40,35,28,.55);margin-bottom:20px}
+.strip-walnut .strip-squirrel{font-size:23px;color:rgba(40,35,28,.3);margin-bottom:28px;font-style:italic}
+.strip-visual{position:relative;z-index:1;display:flex;align-items:center;justify-content:center}
+.strip-canvas{width:100%;max-width:320px;aspect-ratio:1}
+.strip-alive{background:linear-gradient(170deg,#0a2540 0%,#0e3158 20%,#0d2e52 60%,#071e3a 100%);border-top:1px solid rgba(201,161,98,.06)}
+.strip-alive::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(201,161,98,.05) 0%,transparent 60%);pointer-events:none}
+.strip-alive .strip-badge{font-family:var(--sans);font-size:13px;font-weight:300;letter-spacing:.5em;text-transform:uppercase;color:rgba(201,161,98,.5);margin-bottom:20px}
+.strip-alive .strip-title{font-size:clamp(30px,4.5vw,46px);font-weight:300;font-style:italic;line-height:1.12;color:rgba(250,245,235,.88);margin-bottom:20px}
+.strip-alive .strip-body{font-size:23px;font-weight:300;font-style:italic;line-height:1.78;color:rgba(250,245,235,.42);margin-bottom:20px}
+.strip-credit{font-family:var(--sans);font-size:23px;font-weight:300;letter-spacing:.15em;margin-bottom:8px}
+.strip-alive .strip-credit{color:rgba(250,245,235,.25)}.strip-credit strong{font-weight:400}
+
+.magyar{padding:140px 48px 120px;text-align:center;position:relative;overflow:hidden;background:linear-gradient(170deg,#1a0e0c 0%,#2a1410 25%,#221210 50%,#1e0f0c 75%,#120807 100%)}
+.magyar::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 35%,rgba(139,47,38,.1) 0%,transparent 55%);pointer-events:none}
+.magyar canvas{position:absolute;inset:0;z-index:0}
+.magyar-glow{position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);width:900px;height:900px;background:radial-gradient(ellipse,rgba(139,47,38,.06) 0%,rgba(181,65,58,.02) 40%,transparent 70%);animation:magyarGlow 10s ease-in-out infinite;pointer-events:none;z-index:1}
+@keyframes magyarGlow{0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}}
+.magyar-label{font-family:var(--sans);font-size:23px;font-weight:300;letter-spacing:.6em;text-transform:uppercase;color:rgba(181,65,58,.6);margin-bottom:36px;position:relative;z-index:2}
+.magyar h2{text-align:center;color:rgba(250,235,225,.88);max-width:720px;margin:0 auto 24px;font-size:clamp(32px,5.5vw,52px);position:relative;z-index:2}
+.magyar-sub{font-size:23px;font-weight:300;font-style:italic;color:rgba(250,235,225,.4);max-width:600px;margin:0 auto 20px;line-height:1.7;position:relative;z-index:2}
+.magyar-word-wrap{position:relative;z-index:2;margin:56px auto 8px}
+.magyar-word{font-size:clamp(28px,5.5vw,58px);font-weight:300;font-style:italic;color:rgba(181,65,58,.65);letter-spacing:.02em;text-shadow:0 0 80px rgba(139,47,38,.15);cursor:default;transition:color .6s}.magyar-word:hover{color:rgba(181,65,58,.85)}
+.magyar-gloss{font-family:var(--sans);font-size:23px;font-weight:300;letter-spacing:.3em;text-transform:uppercase;color:rgba(250,235,225,.2);margin-top:12px;margin-bottom:48px;position:relative;z-index:2}
+.morpheme-strip{display:flex;justify-content:center;gap:6px;margin:0 auto 60px;position:relative;z-index:2;flex-wrap:wrap;max-width:700px;padding:0 24px}
+.morpheme{padding:14px 18px;border:1px solid rgba(181,65,58,.1);border-radius:8px;text-align:center;cursor:default;transition:all .5s cubic-bezier(.4,0,.2,1)}
+.morpheme:hover{border-color:rgba(181,65,58,.35);transform:translateY(-3px);background:rgba(181,65,58,.04)}
+.morpheme-hu{font-size:23px;font-weight:400;font-style:italic;color:rgba(250,235,225,.65);margin-bottom:6px;transition:color .4s}.morpheme:hover .morpheme-hu{color:rgba(181,65,58,.8)}
+.morpheme-en{font-family:var(--sans);font-size:13px;font-weight:300;letter-spacing:.18em;text-transform:uppercase;color:rgba(250,235,225,.2);transition:color .4s}.morpheme:hover .morpheme-en{color:rgba(250,235,225,.35)}
+.morpheme-arrow{font-family:var(--sans);font-size:23px;color:rgba(181,65,58,.15);align-self:center;padding:0 2px}
+.magyar-prose{max-width:620px;margin:0 auto;position:relative;z-index:2;text-align:left;padding:0 24px}
+.magyar-prose p{color:rgba(250,235,225,.4);margin-bottom:20px}.magyar-prose p strong{color:rgba(250,235,225,.7);font-weight:500}.magyar-prose p em{color:rgba(181,65,58,.65)}
+.magyar-capture{max-width:500px;margin:60px auto 0;position:relative;z-index:2}
+.magyar-capture .cap-label{font-size:23px;font-style:italic;color:rgba(250,235,225,.35);text-align:center;margin-bottom:28px;line-height:1.65}
+.capture-form{display:flex;gap:0;border:1px solid rgba(181,65,58,.18);border-radius:40px;overflow:hidden;transition:border-color .4s,box-shadow .4s}
+.capture-form:focus-within{border-color:rgba(181,65,58,.4);box-shadow:0 0 40px rgba(139,47,38,.06)}
+.capture-input{flex:1;padding:16px 28px;background:transparent;border:none;outline:none;font-family:var(--serif);font-size:23px;font-style:italic;color:rgba(250,235,225,.8)}
+.capture-input::placeholder{color:rgba(250,235,225,.18)}
+.capture-btn{padding:16px 32px;background:rgba(181,65,58,.12);border:none;cursor:pointer;font-family:var(--sans);font-size:23px;font-weight:300;letter-spacing:.3em;text-transform:uppercase;color:rgba(181,65,58,.6);transition:all .4s}
+.capture-btn:hover{background:rgba(181,65,58,.22);color:rgba(181,65,58,.9)}
+.capture-success{display:none;text-align:center;padding:20px;font-size:23px;font-style:italic;color:rgba(181,65,58,.65)}
+.capture-form.submitted{display:none}.capture-form.submitted+.capture-success{display:block}
+
+
+.r{opacity:0;transform:translateY(22px);transition:opacity .9s ease,transform .9s ease}.r.in{opacity:1;transform:translateY(0)}
+.r[data-d="1"]{transition-delay:.14s}.r[data-d="2"]{transition-delay:.28s}.r[data-d="3"]{transition-delay:.42s}.r[data-d="4"]{transition-delay:.56s}
+
+@media(max-width:900px){.strip-inner{grid-template-columns:1fr;gap:48px;text-align:center}.strip-visual{order:-1}.strip-canvas{max-width:220px}}
+.hero-word:active{color:rgba(201,161,98,.55)}
+
+.lab-carousel{display:none}
+@media(max-width:768px){
+.lab-carousel{display:block;overflow:hidden;position:relative;padding:40px 0 32px;background:linear-gradient(180deg,#0a2540 0%,#0d2e52 100%)}
+.lc-track{display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1);touch-action:pan-y}
+.lc-slide{min-width:100vw;padding:0 36px;box-sizing:border-box;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.lc-num{font-family:var(--sans);font-size:11px;font-weight:300;letter-spacing:.4em;text-transform:uppercase;color:rgba(201,161,98,.3);margin-bottom:8px}
+.lc-label{font-family:var(--sans);font-size:11px;font-weight:300;letter-spacing:.25em;text-transform:uppercase;color:rgba(201,161,98,.5);margin-bottom:20px}
+.lc-quote{font-size:clamp(22px,6vw,30px);font-weight:300;font-style:italic;line-height:1.3;color:rgba(250,245,235,.85);margin-bottom:16px}
+.lc-preview{font-size:14px;font-weight:300;font-style:italic;color:rgba(250,245,235,.3);line-height:1.6;margin-bottom:0}
+.lc-dots{display:flex;justify-content:center;gap:8px;padding:24px 0 0}
+.lc-dot{width:6px;height:6px;border-radius:50%;background:rgba(201,161,98,.15);transition:all .4s}
+.lc-dot.active{background:rgba(201,161,98,.5);transform:scale(1.3)}
+}
+.btn-light:active{border-color:var(--gold);background:rgba(201,161,98,.08)}
+.btn-dark:active{border-color:rgba(201,161,98,.5);color:rgba(212,184,120,.9);background:rgba(201,161,98,.1)}
+.btn-walnut:active{border-color:rgba(255,110,0,.5);background:var(--walnut-faint)}
+.morpheme:active{border-color:rgba(181,65,58,.35);transform:translateY(-3px);background:rgba(181,65,58,.04)}
+.capture-btn:active{background:rgba(181,65,58,.28);color:rgba(181,65,58,.95)}
+.magyar-word:active{color:rgba(181,65,58,.85)}
+@media(max-width:640px){
+  .hero{padding:80px 24px 60px}
+  .hero h1{font-size:clamp(1.8rem,6vw,2.6rem)}
+  .hero-sub{font-size:clamp(1rem,3vw,1.3rem)}
+  .hero-ey{font-size:16px;letter-spacing:.4em}
+  .section{padding:56px 24px}
+  .section h2{font-size:clamp(1.6rem,5vw,2.2rem)}
+  p,.sb,.strip-body,.dp-body,.ld-desc,.magyar-sub,.magyar-gloss{font-size:16px}
+  .ss{font-size:clamp(1.2rem,3.5vw,1.5rem)}
+  .strip{padding:60px 24px}
+  .strip-title{font-size:clamp(1.5rem,5vw,2.2rem)}
+  .strip-tagline{font-size:16px}
+  .magyar{padding:60px 24px}
+  .magyar-word{font-size:clamp(20px,5vw,32px);overflow-wrap:break-word;word-break:break-word}
+  .morpheme-strip{gap:8px}
+  .capture-form{flex-direction:column;border-radius:20px}
+  .capture-input{text-align:center;font-size:16px}
+  .capture-btn{border-radius:0 0 20px 20px;padding:14px;font-size:14px}
+  .stat-band{flex-wrap:wrap;gap:24px;padding:36px 24px}
+  .stat .num{font-size:clamp(2rem,5.5vw,2.8rem)}
+  .stat .lbl{font-size:14px}
+  .btn,.btn-dark,.btn-walnut,.btn-light{font-size:14px;padding:14px 28px;letter-spacing:.25em}
+  .pull-quote{font-size:clamp(1.3rem,4vw,1.8rem)}
+  .pull-wrap{overflow:hidden}
+  .layer-detail{grid-template-columns:1fr;padding:36px 24px 28px}
+  .cap-label{font-size:14px}
+  .label{font-size:16px}
+  .pq{font-size:clamp(1.2rem,3.5vw,1.5rem);padding-left:20px}
+  .sh{font-size:clamp(1.1rem,3vw,1.4rem)}
+  .hero-word.hw-lg{font-size:28px}
+  .hero-word.hw-md{font-size:20px}
+  .hero-word.hw-sm{font-size:16px}
+  .hero-word[data-hw="0"]{left:6%!important;top:24%!important;right:auto!important}
+  .hero-word[data-hw="1"]{right:6%!important;top:70%!important;left:auto!important}
+  .hero-word[data-hw="2"]{left:5%!important;top:74%!important;right:auto!important}
+  .hero-word[data-hw="3"]{right:5%!important;top:22%!important;left:auto!important}
+  .hero-word[data-hw="4"]{left:8%!important;top:44%!important;right:auto!important}
+  .hero-word[data-hw="5"]{right:5%!important;top:48%!important;left:auto!important}
+  .hero-word[data-hw="6"]{left:20%!important;top:82%!important;right:auto!important}
+}
+@media(max-width:400px){
+  .hero h1{font-size:1.7rem}
+  p,.sb,.strip-body{font-size:15px}
+  .btn,.btn-dark,.btn-walnut,.btn-light{font-size:13px;padding:12px 24px}
+}
+</style>
+</head>
+<body>
+<nav id="lm-nav" data-mode="on-dark"></nav>
+
+<section class="hero lm-dark-section" id="hero"><canvas id="hero-canvas"></canvas><div class="hero-glow"></div><div class="hero-shaft"></div>
+<a href="#cognition" class="hero-word hw-lg" data-hw="0" style="left:6%;top:22%">Cognition</a>
+<a href="#cognition" class="hero-word hw-lg" data-hw="1" style="right:8%;top:68%">Perception</a>
+<a href="#oracle" class="hero-word hw-md" data-hw="2" style="left:5%;top:72%">Oracle</a>
+<a href="#quest" class="hero-word hw-md" data-hw="3" style="right:6%;top:24%">Quest</a>
+<a href="#walnut-world" class="hero-word hw-sm" data-hw="4" style="left:16%;top:48%">Context</a>
+<a href="#alive" class="hero-word hw-md" data-hw="5" style="right:5%;top:46%">Sovereign</a>
+<a href="#hungarian" class="hero-word hw-sm" data-hw="6" style="left:36%;top:84%">Magyar</a>
+<span class="hero-ey">Living Mirrors Lab</span><h1>What should<br>superintelligence reflect?</h1><p class="hero-sub">Six questions we're building answers to. In cognition, language, context, and the architecture underneath.</p></section>
+
+<div class="lab-carousel" id="labCarousel">
+<div class="lc-track" id="lcTrack">
+<div class="lc-slide" data-target="#cognition"><div class="lc-num">I</div><div class="lc-label">Cognition</div><div class="lc-quote">Every AI on earth runs the same mind.</div><div class="lc-preview">We build the other architectures.</div></div>
+<div class="lc-slide" data-target="#oracle"><div class="lc-num">II</div><div class="lc-label">Oracle</div><div class="lc-quote">Helping you think is one thing. Helping you choose is another.</div><div class="lc-preview">When the mirror knows your patterns better than you do.</div></div>
+<div class="lc-slide" data-target="#quest"><div class="lc-num">III</div><div class="lc-label">Quest</div><div class="lc-quote">We lost the frameworks for meaning and replaced them with nothing.</div><div class="lc-preview">A structure for meaning grounded in neuroscience.</div></div>
+<div class="lc-slide" data-target="#walnut-world"><div class="lc-num">IV</div><div class="lc-label">Walnut</div><div class="lc-quote">What if context had structure?</div><div class="lc-preview">Five files that carry your world between sessions.</div></div>
+<div class="lc-slide" data-target="#alive"><div class="lc-num">V</div><div class="lc-label">Sovereign</div><div class="lc-quote">Nothing phones home. Nothing leaves without your say.</div><div class="lc-preview">The private context layer underneath.</div></div>
+<div class="lc-slide" data-target="#hungarian"><div class="lc-num">VI</div><div class="lc-label">Magyar</div><div class="lc-quote">What if the language of the spec changes how the AI thinks?</div><div class="lc-preview">Morphology mirrors neural network composition.</div></div>
+</div>
+<div class="lc-dots" id="lcDots"></div>
+</div>
+
+<div class="section r" id="cognition"><span class="label">Research Direction I</span><h2>Cognition and perception</h2><p>Every AI on earth runs the same cognitive architecture. Analytical. Convergent. Sequential. The same mind, every time, for every person, on every problem.</p><p>We build the other architectures. <strong>Cognitive mode specifications</strong> that restructure how an intelligence perceives, connects, and reasons at inference time. Seven principles from neuroscience. Five emergent combinations. Six independent axes already running.</p><p><em>Plain text as cognitive program.</em> The document changes the shape of thought. Anyone who can write a clear spec can design a mode of perception.</p><p><a href="/modes/" style="color:var(--gold);text-decoration:underline;text-underline-offset:4px">See the modes we've built →</a></p></div>
+
+<div class="h-rule"></div>
+
+<div class="section r" id="oracle"><span class="label">Research Direction II</span><h2>Oracle — How you choose</h2><p>An AI that helps you think is one thing. An AI that helps you choose is another thing entirely. Seven principles grounded in Kahneman, Klein, and Bayesian cognition. Fully designed. Not yet shipped.</p><p>When the mirror has accumulated months of context — every decision logged, every bias mapped — it knows your decision architecture better than you do. Should it tell you? If it frames options, the framing shapes the choice. If it withholds, it withholds deliberately. <em>Surfacing is not neutral.</em></p><p><a href="/philosophy/oracle/" style="color:var(--gold);text-decoration:underline;text-underline-offset:4px">Enter the Oracle research board →</a></p></div>
+
+<div class="fw"><div class="pull-wrap"><p class="pull-quote r"><em>The deficit was always the surplus.</em></p></div></div>
+
+<div class="section r" id="quest"><span class="label">Research Direction III</span><h2>Quest — The meaning engine</h2><p>Vervaeke diagnosed the meaning crisis: we lost the frameworks that provided meaning and replaced them with nothing. Quest is a direct response. Not gamification. A structure for meaning.</p><p>Your ventures are realms. Your sessions are quests. A <strong>Virtue Compass</strong> measures not how far you walked but <em>how</em> you walked. Campbell's monomyth. Frankl's will to meaning. The Grail Quest tradition.</p><p>Panksepp's SEEKING system fires during pursuit, not arrival. Quest focuses on departure — the dopamine hit comes when you set out, not when you finish.</p><p><a href="/philosophy/quest/" style="color:var(--gold);text-decoration:underline;text-underline-offset:4px">Read the Quest research brief →</a></p></div>
+
+<div class="h-rule"></div>
+
+<div class="strip strip-walnut" id="walnut-world"><div class="strip-inner"><div class="strip-text r"><div class="strip-badge">Research Direction IV</div><div class="strip-title">Walnut World</div><div class="strip-tagline">What if context had structure?</div><p class="strip-body">Every conversation you have with AI starts from zero. Your decisions, your history, your knowledge — gone. You rebuild the same context every single time.</p><p class="strip-body">A walnut is the fix. Five plain-text files that carry identity, state, history, knowledge, and work queue between sessions. Any AI loads them. Every session compounds. The context never leaves your machine.</p><p class="strip-body">Walnut World is the ecosystem. Skills, cognitive modes, and infrastructure that anyone can build, share, and remix. Open architecture. No lock-in.</p><a href="https://walnut.world" class="btn btn-walnut" target="_blank" rel="noopener">Explore Walnut World</a></div><div class="strip-visual r" data-d="1"><canvas class="strip-canvas" id="walnut-canvas"></canvas></div></div></div>
+
+<div class="strip strip-alive lm-dark-section" id="alive"><div class="strip-inner"><div class="strip-visual r"><canvas class="strip-canvas" id="alive-canvas"></canvas></div><div class="strip-text r" data-d="1"><div class="strip-badge">Research Direction V</div><div class="strip-title">ALIVE</div><p class="strip-body">The sovereign context layer. File-based. Runs on your machine. Nothing phones home. Nothing leaves without your say.</p><p class="strip-body"><strong style="color:rgba(250,245,235,.65)">Ben Flint</strong> built the framework — memory, sessions, save protocol, the caretaker runtime that makes any AI agent interchangeable. <strong style="color:rgba(250,245,235,.65)">Attila Mora</strong> built the perception layer — nine cognitive modes across five axes that restructure how intelligence sees, connects, and reasons.</p><p class="strip-body" style="color:rgba(250,245,235,.5)">The research improves the tools that make the research possible. Two minds. One architecture. Open source forever.</p><div class="strip-credit"><strong>Ben Flint</strong> &middot; Supernormal Systems &middot; Framework Architecture</div><div class="strip-credit"><strong>Attila Mora</strong> &middot; Living Mirrors &middot; Cognitive Architecture</div><div style="margin-top:32px"><a href="https://github.com/alivecomputer/context" class="btn btn-dark" target="_blank" rel="noopener">View on GitHub</a></div></div></div></div>
+
+<section class="magyar lm-dark-section" id="hungarian"><canvas id="magyar-canvas"></canvas><div class="magyar-glow"></div><div class="magyar-label r">Research Direction VI</div><h2 class="r">The Hungarian Hypothesis</h2><p class="magyar-sub r">What if the language you write a cognitive specification in changes how the AI thinks?</p><div class="magyar-word-wrap r" data-d="1"><div class="magyar-word" id="magyarWord">megszentségteleníthetetlen</div></div><div class="magyar-gloss r" data-d="1">That which cannot be desecrated</div>
+<div class="morpheme-strip r" data-d="2"><div class="morpheme"><div class="morpheme-hu">meg-</div><div class="morpheme-en">completion</div></div><span class="morpheme-arrow">+</span><div class="morpheme"><div class="morpheme-hu">szent</div><div class="morpheme-en">holy</div></div><span class="morpheme-arrow">+</span><div class="morpheme"><div class="morpheme-hu">-ség</div><div class="morpheme-en">quality of</div></div><span class="morpheme-arrow">+</span><div class="morpheme"><div class="morpheme-hu">-telen</div><div class="morpheme-en">without</div></div><span class="morpheme-arrow">+</span><div class="morpheme"><div class="morpheme-hu">-ít</div><div class="morpheme-en">to make</div></div><span class="morpheme-arrow">+</span><div class="morpheme"><div class="morpheme-hu">-het</div><div class="morpheme-en">possible</div></div><span class="morpheme-arrow">+</span><div class="morpheme"><div class="morpheme-hu">-etlen</div><div class="morpheme-en">not</div></div></div>
+<div class="magyar-prose r" data-d="3"><p>Agglutinative languages encode relationship, temporality, and intentionality within single morphological units. One word contains what English needs an entire clause to express. Hungarian. Estonian. Turkish. Japanese.</p><p>Neural networks build meaning through layer composition. <strong>These are structurally homologous.</strong> The morphological layering of an agglutinative word mirrors the layer composition of a neural network. <em>The language of the document is the programming language.</em></p><p>The first experiment: write the Savant Mode specification natively in Hungarian. Run identical prompts through both. Measure the outputs. Academic partner validates. Results published open source.</p></div>
+<div class="magyar-capture r" data-d="4"><p class="cap-label">Be the first to see the research proposal when it opens.</p><form class="capture-form" id="magyarForm"><input type="email" class="capture-input" placeholder="your@email.com" required><button type="submit" class="capture-btn">Notify Me</button></form><div class="capture-success">We will send you the proposal.</div></div></section>
+
+<div class="fw"><div class="pull-wrap lm-dark-section" style="background:linear-gradient(180deg,#0a2540,#0d2e52);padding:100px 48px"><p class="pull-quote r" style="color:rgba(250,245,235,.85);margin-bottom:12px"><em>Choose what it reflects.</em></p><p class="r" data-d="1" style="color:rgba(250,245,235,.35);font-size:18px;margin-bottom:36px;text-align:center">The philosophy behind the lab.</p><div class="r" data-d="2" style="text-align:center"><a href="/philosophy/" class="btn btn-dark">Read the Philosophy</a></div></div></div>
+
+<footer id="lm-footer"></footer>
+
+<script>
+
+const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('in');obs.unobserve(el.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.r').forEach(el=>obs.observe(el));
+
+
+(function(){if(window.innerWidth<768)return;const ring=document.createElement('div');ring.className='cursor-ring';const dot=document.createElement('div');dot.className='cursor-dot';ring.appendChild(dot);document.body.appendChild(ring);const hero=document.getElementById('hero');let cx=-100,cy=-100,rx=-100,ry=-100;hero.addEventListener('mouseenter',()=>{ring.style.display='block'});hero.addEventListener('mouseleave',()=>{ring.style.display='none'});document.addEventListener('mousemove',e=>{cx=e.clientX;cy=e.clientY});(function loop(){rx+=(cx-rx)*.12;ry+=(cy-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})()})();
+
+(function(){const c=document.getElementById('hero-canvas'),ctx=c.getContext('2d');let nodes=[],w,h,t=0,mx=-999,my=-999,fire=null;const g=[201,161,98];function resize(){w=c.width=window.innerWidth;h=c.height=window.innerHeight;init()}function init(){nodes=[];const layers=[{count:Math.min(22,Math.floor(w*h/40000)),alpha:.08,size:1,conn:180,ca:.04},{count:Math.min(28,Math.floor(w*h/28000)),alpha:.2,size:1.8,conn:220,ca:.08},{count:Math.min(18,Math.floor(w*h/40000)),alpha:.4,size:2.8,conn:280,ca:.14}];for(const s of layers){for(let i=0;i<s.count;i++){const ox=Math.random()*w,oy=Math.random()*h;nodes.push({x:ox,y:oy,ox,oy,r:s.size+Math.random()*s.size*.5,ba:s.alpha,conn:s.conn,ca:s.ca,ph:Math.random()*Math.PI*2,wn:40+Math.random()*80,ws:.0003+Math.random()*.0005,aa:6+Math.random()*18,af:.25+Math.random()*.4,ap:Math.random()*Math.PI*2})}}}function fireGlow(nx,ny,now){if(!fire)return 0;const age=(now-fire.t)/1000;if(age>3.5)return 0;const d=Math.sqrt((nx-fire.x)**2+(ny-fire.y)**2),wf=age*350,ww=100+age*50,dist=Math.abs(d-wf);if(dist>ww)return 0;return(1-dist/ww)*(1-age/3.5)*(.5+Math.min(d/600,1)*.5)}c.addEventListener('click',e=>{const r=c.getBoundingClientRect();fire={x:e.clientX-r.left,y:e.clientY-r.top,t:performance.now()}});
+window._heroFire=function(f){fire=f};c.parentElement.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY-c.getBoundingClientRect().top});c.parentElement.addEventListener('mouseleave',()=>{mx=-999;my=-999});function draw(){t+=.003;const now=performance.now();ctx.clearRect(0,0,w,h);if(fire&&(now-fire.t)/1000>3.5)fire=null;for(const n of nodes){const wt=t*200*n.ws;n.x=n.ox+Math.sin(wt+n.ph)*n.wn+Math.sin(t*n.af+n.ap)*n.aa;n.y=n.oy+Math.cos(wt*1.2+n.ph*.7)*n.wn*.75+Math.sin(t*n.af*1.618+n.ap)*n.aa*.6}for(let i=0;i<nodes.length;i++){for(let j=i+1;j<nodes.length;j++){const dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y,d=Math.sqrt(dx*dx+dy*dy);const maxD=Math.max(nodes[i].conn,nodes[j].conn);if(d<maxD){let a=Math.min(nodes[i].ca,nodes[j].ca)*(1-d/maxD);const fg=Math.max(fireGlow(nodes[i].x,nodes[i].y,now),fireGlow(nodes[j].x,nodes[j].y,now));if(fg>0)a=Math.min(a+fg*.4,.45);if(mx>0){const m1=Math.sqrt((nodes[i].x-mx)**2+(nodes[i].y-my)**2);const m2=Math.sqrt((nodes[j].x-mx)**2+(nodes[j].y-my)**2);if(m1<200||m2<200)a=Math.min(a*2,.25)}ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);ctx.strokeStyle=fg>.2?`rgba(230,210,170,${a})`:`rgba(${g[0]},${g[1]},${g[2]},${a})`;ctx.lineWidth=fg>.3?1:.5;ctx.stroke()}}}for(const n of nodes){const fg=fireGlow(n.x,n.y,now);let a=n.ba+fg*.6,r=n.r;if(fg>.1)r*=1+fg*.8;if(mx>0){const md=Math.sqrt((n.x-mx)**2+(n.y-my)**2);if(md<150){a=Math.min(a+.15*(1-md/150),.8);r*=1+.3*(1-md/150)}}ctx.beginPath();ctx.arc(n.x,n.y,r,0,Math.PI*2);ctx.fillStyle=fg>.2?`rgba(230,210,170,${Math.min(a,.9)})`:`rgba(${g[0]},${g[1]},${g[2]},${a})`;ctx.fill();if(fg>.3){ctx.beginPath();ctx.arc(n.x,n.y,r*3,0,Math.PI*2);ctx.fillStyle=`rgba(230,210,170,${fg*.08})`;ctx.fill()}}if(fire){const age=(now-fire.t)/1000,radius=age*350,alpha=Math.max(0,.3*(1-age/3.5));ctx.beginPath();ctx.arc(fire.x,fire.y,radius,0,Math.PI*2);ctx.strokeStyle=`rgba(230,210,170,${alpha})`;ctx.lineWidth=1.5;ctx.stroke()}
+// Draw faint lines from nearby particles to floating words
+const heroWords=document.querySelectorAll('.hero-word');const cr=c.getBoundingClientRect();
+heroWords.forEach(hw=>{const wr=hw.getBoundingClientRect();const wcx=wr.left-cr.left+wr.width/2;const wcy=wr.top-cr.top+wr.height/2;
+for(const n of nodes){const dx=n.x-wcx,dy=n.y-wcy,d=Math.sqrt(dx*dx+dy*dy);
+if(d<160){const la=.03*(1-d/160);ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.lineTo(wcx,wcy);ctx.strokeStyle=`rgba(${g[0]},${g[1]},${g[2]},${la})`;ctx.lineWidth=.3;ctx.stroke()}}});
+requestAnimationFrame(draw)}resize();window.addEventListener('resize',resize);draw()})();
+
+(function(){const c=document.getElementById('walnut-canvas');if(!c)return;const ctx=c.getContext('2d');let w,h,t=0,speed=1,targetSpeed=1;
+c.parentElement.addEventListener('mouseenter',()=>{targetSpeed=.3});
+c.parentElement.addEventListener('mouseleave',()=>{targetSpeed=1});
+function resize(){const r=c.getBoundingClientRect();w=c.width=r.width*2;h=c.height=r.height*2;ctx.scale(2,2)}
+function draw(){speed+=(targetSpeed-speed)*.05;t+=.005*speed;const cw=w/4,ch=h/4,cx=cw,cy=ch;ctx.clearRect(0,0,w,h);
+// Swirling rings
+for(let i=0;i<6;i++){const phase=t*.8+i*.5;const scale=1+Math.sin(phase)*.04;const radius=(30+i*24)*scale;
+const rot=t*.15+i*.3;ctx.save();ctx.translate(cx,cy);ctx.rotate(rot);
+ctx.beginPath();ctx.ellipse(0,0,radius,radius*.85,0,0,Math.PI*2);
+ctx.strokeStyle=`rgba(255,110,0,${.04+i*.03+Math.sin(phase)*.02})`;ctx.lineWidth=.5;ctx.stroke();ctx.restore()}
+// Breathing core
+const coreR=22+Math.sin(t*1.2)*4;const grad=ctx.createRadialGradient(cx,cy,0,cx,cy,coreR*2.5);
+grad.addColorStop(0,'rgba(255,110,0,.14)');grad.addColorStop(.4,'rgba(255,110,0,.05)');grad.addColorStop(1,'transparent');
+ctx.beginPath();ctx.arc(cx,cy,coreR*2.5,0,Math.PI*2);ctx.fillStyle=grad;ctx.fill();
+// Orbiting particles — constant swirl
+for(let i=0;i<20;i++){const baseAngle=i*(Math.PI*2/20);const angle=t*.4+baseAngle+Math.sin(t*.3+i)*0.3;
+const orbit=45+i*6+Math.sin(t*.7+i*1.3)*12;const px=cx+Math.cos(angle)*orbit;const py=cy+Math.sin(angle)*orbit*.8;
+const size=.8+Math.sin(t*1.5+i)*.6;const alpha=.06+Math.sin(t+i*.7)*.04;
+ctx.beginPath();ctx.arc(px,py,size,0,Math.PI*2);ctx.fillStyle=`rgba(255,110,0,${alpha})`;ctx.fill();
+// Faint trails
+const trailAngle=angle-.15;const tx=cx+Math.cos(trailAngle)*orbit;const ty=cy+Math.sin(trailAngle)*orbit*.8;
+ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(tx,ty);ctx.strokeStyle=`rgba(255,110,0,${alpha*.4})`;ctx.lineWidth=.3;ctx.stroke()}
+requestAnimationFrame(draw)}resize();window.addEventListener('resize',()=>{ctx.setTransform(1,0,0,1,0,0);resize()});draw()})();
+
+(function(){const c=document.getElementById('alive-canvas');if(!c)return;const ctx=c.getContext('2d');let w,h,t=0,speed=1,targetSpeed=1;
+const g=[201,161,98];
+const pts=[{x:.5,y:.15,core:true},{x:.22,y:.4},{x:.78,y:.4},{x:.15,y:.7},{x:.5,y:.62},{x:.85,y:.7},{x:.35,y:.88},{x:.65,y:.88}];
+const edges=[[0,1],[0,2],[1,3],[1,4],[2,4],[2,5],[3,6],[4,6],[4,7],[5,7],[3,4],[4,5],[6,7]];
+c.parentElement.addEventListener('mouseenter',()=>{targetSpeed=2.5});
+c.parentElement.addEventListener('mouseleave',()=>{targetSpeed=1});
+function resize(){const r=c.getBoundingClientRect();w=c.width=r.width*2;h=c.height=r.height*2;ctx.scale(2,2)}
+function draw(){speed+=(targetSpeed-speed)*.04;t+=.004*speed;const cw=w/4,ch=h/4;ctx.clearRect(0,0,w,h);
+// Multiple traveling pulses
+const p1=Math.floor(t*2)%edges.length,f1=(t*2)%1;
+const p2=Math.floor(t*3.1+5)%edges.length,f2=(t*3.1+5)%1;
+const p3=Math.floor(t*1.7+9)%edges.length,f3=(t*1.7+9)%1;
+const pulses=[{idx:p1,frac:f1},{idx:p2,frac:f2},{idx:p3,frac:f3}];
+// Wobbling node positions
+const nodePos=pts.map((p,i)=>({
+  x:p.x*cw*2+Math.sin(t*1.5+i*1.3)*4+Math.sin(t*.7+i)*2,
+  y:p.y*ch*2+Math.cos(t*1.2+i*.9)*3+Math.cos(t*.5+i*1.7)*2,core:p.core}));
+// Edges
+for(let i=0;i<edges.length;i++){const[a,b]=edges[i];const ax=nodePos[a].x,ay=nodePos[a].y,bx=nodePos[b].x,by=nodePos[b].y;
+let alpha=.06;for(const p of pulses){if(p.idx===i)alpha=Math.max(alpha,.06+.22*Math.sin(p.frac*Math.PI))}
+ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);
+ctx.strokeStyle=`rgba(${g[0]},${g[1]},${g[2]},${alpha})`;ctx.lineWidth=.5;ctx.stroke();
+// Traveling dots
+for(const p of pulses){if(p.idx===i){const dx=ax+(bx-ax)*p.frac,dy=ay+(by-ay)*p.frac;
+ctx.beginPath();ctx.arc(dx,dy,1.5,0,Math.PI*2);
+ctx.fillStyle=`rgba(${g[0]},${g[1]},${g[2]},${.35*Math.sin(p.frac*Math.PI)})`;ctx.fill()}}}
+// Nodes with breathing
+for(let i=0;i<nodePos.length;i++){const n=nodePos[i];const size=n.core?5+Math.sin(t)*1:2.5+Math.sin(t+i)*.8;
+const alpha=n.core?.5+Math.sin(t*.8)*.1:.2+Math.sin(t+i)*.08;
+if(n.core){const gg=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,25);
+gg.addColorStop(0,`rgba(${g[0]},${g[1]},${g[2]},.12)`);gg.addColorStop(1,'transparent');
+ctx.beginPath();ctx.arc(n.x,n.y,25,0,Math.PI*2);ctx.fillStyle=gg;ctx.fill()}
+ctx.beginPath();ctx.arc(n.x,n.y,size,0,Math.PI*2);
+ctx.fillStyle=`rgba(${g[0]},${g[1]},${g[2]},${alpha})`;ctx.fill()}
+requestAnimationFrame(draw)}resize();window.addEventListener('resize',()=>{ctx.setTransform(1,0,0,1,0,0);resize()});draw()})();
+
+(function(){const c=document.getElementById('magyar-canvas');if(!c)return;const ctx=c.getContext('2d');let w,h,t=0;const particles=[];const r=[139,47,38];function resize(){w=c.width=window.innerWidth;h=c.height=c.parentElement.offsetHeight;init()}function init(){particles.length=0;const count=Math.min(50,Math.floor(w*h/30000));for(let i=0;i<count;i++){particles.push({x:Math.random()*w,y:Math.random()*h,ox:Math.random()*w,oy:Math.random()*h,r:.5+Math.random()*2,alpha:.03+Math.random()*.08,ph:Math.random()*Math.PI*2,wn:30+Math.random()*60,ws:.0002+Math.random()*.0004,af:.2+Math.random()*.3,ap:Math.random()*Math.PI*2})}}function draw(){t+=.003;ctx.clearRect(0,0,w,h);for(const p of particles){const wt=t*200*p.ws;p.x=p.ox+Math.sin(wt+p.ph)*p.wn+Math.sin(t*p.af+p.ap)*12;p.y=p.oy+Math.cos(wt*1.2+p.ph*.7)*p.wn*.75}for(let i=0;i<particles.length;i++){for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<160){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(${r[0]},${r[1]},${r[2]},${.04*(1-d/160)})`;ctx.lineWidth=.5;ctx.stroke()}}}for(const p of particles){ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(${r[0]},${r[1]},${r[2]},${p.alpha})`;ctx.fill()}requestAnimationFrame(draw)}resize();window.addEventListener('resize',resize);draw()})();
+
+(function(){const morphemes=document.querySelectorAll('.morpheme');const word=document.getElementById('magyarWord');if(!word||!morphemes.length)return;const parts=['meg','szent','ség','telen','ít','het','etlen'];let pos=0;const ranges=[];const full='megszentségteleníthetetlen';for(const p of parts){const idx=full.indexOf(p,pos);ranges.push([idx,idx+p.length]);pos=idx+p.length}morphemes.forEach((m,i)=>{m.addEventListener('mouseenter',()=>{let html='',highlighted=false;for(let ci=0;ci<full.length;ci++){let inRange=false;for(let ri=0;ri<=i;ri++){if(ci>=ranges[ri][0]&&ci<ranges[ri][1])inRange=true}if(inRange&&!highlighted){html+='<span style="color:rgba(181,65,58,.85)">';highlighted=true}if(!inRange&&highlighted){html+='</span>';highlighted=false}html+=full[ci]}if(highlighted)html+='</span>';word.innerHTML=html});m.addEventListener('mouseleave',()=>{word.textContent=full})})})();
+
+// Floating hero words — drift animation + click to scroll
+(function(){
+const words=document.querySelectorAll('.hero-word');if(!words.length)return;
+const phases=[];words.forEach((w,i)=>{
+phases.push({px:Math.random()*Math.PI*2,py:Math.random()*Math.PI*2,ax:8+Math.random()*12,ay:5+Math.random()*8,sx:.0004+Math.random()*.0003,sy:.0003+Math.random()*.0003});
+w.style.opacity='0';w.style.transition='none';
+setTimeout(()=>{w.style.transition='opacity 1.2s ease,color .6s,text-shadow .6s';w.style.opacity='1'},600+i*200);
+w.addEventListener('click',e=>{e.preventDefault();
+const fire={x:w.getBoundingClientRect().left+w.offsetWidth/2,y:w.getBoundingClientRect().top+w.offsetHeight/2-document.getElementById('hero').getBoundingClientRect().top,t:performance.now()};
+if(window._heroFire)window._heroFire(fire);
+const target=document.querySelector(w.getAttribute('href'));
+if(target)setTimeout(()=>target.scrollIntoView({behavior:'smooth',block:'start'}),300)})});
+let t=0;function animate(){t++;
+words.forEach((w,i)=>{const p=phases[i];
+const dx=Math.sin(t*p.sx+p.px)*p.ax;const dy=Math.sin(t*p.sy*1.3+p.py)*p.ay;
+w.style.transform=`translate(${dx}px,${dy}px)`});
+requestAnimationFrame(animate)}animate()})();
+
+// Mobile lab carousel — auto-swipe + touch + tap to section
+(function(){
+if(window.innerWidth>768)return;
+const track=document.getElementById('lcTrack');const dotsWrap=document.getElementById('lcDots');
+if(!track)return;
+const slides=track.querySelectorAll('.lc-slide');const total=slides.length;
+let current=0,startX=0,deltaX=0,dragging=false,autoTimer;
+// dots
+for(let i=0;i<total;i++){const d=document.createElement('div');d.className='lc-dot'+(i===0?' active':'');dotsWrap.appendChild(d)}
+const dots=dotsWrap.querySelectorAll('.lc-dot');
+function goTo(i,smooth){current=((i%total)+total)%total;
+track.style.transition=smooth!==false?'transform .5s cubic-bezier(.4,0,.2,1)':'none';
+track.style.transform=`translateX(-${current*100}vw)`;
+dots.forEach((d,j)=>d.classList.toggle('active',j===current))}
+// auto-advance
+function startAuto(){clearInterval(autoTimer);autoTimer=setInterval(()=>goTo(current+1),4000)}
+startAuto();
+// touch
+track.addEventListener('touchstart',e=>{dragging=true;startX=e.touches[0].clientX;deltaX=0;
+track.style.transition='none';clearInterval(autoTimer)},{passive:true});
+track.addEventListener('touchmove',e=>{if(!dragging)return;deltaX=e.touches[0].clientX-startX;
+track.style.transform=`translateX(calc(-${current*100}vw + ${deltaX}px))`},{passive:true});
+track.addEventListener('touchend',()=>{if(!dragging)return;dragging=false;
+if(Math.abs(deltaX)>50){goTo(deltaX<0?current+1:current-1)}else{goTo(current)}
+startAuto()});
+// tap to scroll
+slides.forEach(s=>{s.addEventListener('click',()=>{
+const target=document.querySelector(s.dataset.target);
+if(target)target.scrollIntoView({behavior:'smooth',block:'start'})})})
+})();
+
+document.getElementById('magyarForm').addEventListener('submit',async function(e){e.preventDefault();const form=this;const email=form.querySelector('.capture-input').value;const btn=form.querySelector('.capture-btn');btn.textContent='...';btn.disabled=true;try{await fetch('https://ftxvqzwsoiuxptbtnzmf.supabase.co/rest/v1/hungarian_experiment_interest',{method:'POST',headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ0eHZxendzb2l1eHB0YnRuem1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk5NjI1MjMsImV4cCI6MjA1NTUzODUyM30.o8kVaMnBaviGIHIFm09JaS7cihJP5r0hUmCHmBqYJnA','Prefer':'return=minimal'},body:JSON.stringify({email,source:'lab-page',created_at:new Date().toISOString()})})}catch(err){}form.classList.add('submitted')});
+</script>
+<script src="/lm-chrome.js"></script>
+</body>
+</html>
