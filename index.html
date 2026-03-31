@@ -2641,7 +2641,9 @@ const _SUPA_KEY = 'sb_publishable_v3kbZDvdd57Nfv8XDVZ4uA_qhaf5VO_';
 
 async function _captureSubmission(primaryKey, secondaryKey, synthesisName) {
   try {
+    const id = crypto.randomUUID();
     const payload = {
+      id,
       primary_archetype: primaryKey,
       secondary_archetype: secondaryKey,
       synthesis_name: synthesisName,
@@ -2664,13 +2666,12 @@ async function _captureSubmission(primaryKey, secondaryKey, synthesisName) {
         'apikey': _SUPA_KEY,
         'Authorization': `Bearer ${_SUPA_KEY}`,
         'Content-Type': 'application/json',
-        'Prefer': 'return=representation',
+        'Prefer': 'return=minimal',
       },
       body: JSON.stringify(payload),
     });
     if (resp.ok) {
-      const data = await resp.json();
-      state.submissionId = data[0]?.id || null;
+      state.submissionId = id;
     }
   } catch (e) {
     // Silent fail — never block the user
@@ -2692,34 +2693,23 @@ async function _captureEmail() {
   btn.textContent = 'Saving...';
 
   try {
-    if (state.submissionId) {
-      // Update existing submission with email
-      await fetch(`${_SUPA_URL}/rest/v1/quiz_submissions?id=eq.${state.submissionId}`, {
-        method: 'PATCH',
-        headers: {
-          'apikey': _SUPA_KEY,
-          'Authorization': `Bearer ${_SUPA_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-    } else {
-      // No submission yet (e.g. network failed earlier) — insert fresh
-      await fetch(`${_SUPA_URL}/rest/v1/quiz_submissions`, {
-        method: 'POST',
-        headers: {
-          'apikey': _SUPA_KEY,
-          'Authorization': `Bearer ${_SUPA_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          primary_archetype: state._lastPrimary,
-          secondary_archetype: state._lastSecondary,
-          synthesis_name: state._lastSynthesis,
-        }),
-      });
-    }
+    // Second insert linking email to the original submission
+    await fetch(`${_SUPA_URL}/rest/v1/quiz_submissions`, {
+      method: 'POST',
+      headers: {
+        'apikey': _SUPA_KEY,
+        'Authorization': `Bearer ${_SUPA_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify({
+        email,
+        primary_archetype: state._lastPrimary,
+        secondary_archetype: state._lastSecondary,
+        synthesis_name: state._lastSynthesis,
+        why: state.submissionId ? `email-for:${state.submissionId}` : null,
+      }),
+    });
     if (msg) { msg.textContent = 'Saved — we\'ll reach out when modules 4–10 launch.'; }
     if (input) input.disabled = true;
     btn.textContent = 'Saved ✓';
